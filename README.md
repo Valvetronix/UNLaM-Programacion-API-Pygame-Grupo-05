@@ -8,23 +8,48 @@ El objetivo es proteger la base de oleadas de enemigos.
 Que debe tener el juego: (Lo marcado con * es opcional, si llegamos con el tiempo)
 
 Programación
-- Héroe (Movimiento [x] / Ataque / Salto*) 
-- Enemigo (Corre hacia la base / Explota si llega a la base / Atacar al héroe si lo intercepta*)
-- Base (Falta definir que es, pero da igual / Recibir daño si un enemigo explota en ella)
+- Héroe
+  - Movimiento
+  - Ataque
+  - Recibir daño
+  - Muerte
+  - Salto*   
+- Enemigo
+  - Corre hacia la base
+  - Explota al llegar a la base
+  - Ataca al heroe si lo intercepta*
+- Base
+  - Recibe daño
+  - Explota al ser destruida
 - Colisiones
 - Sistema de oleadas
-- Escenario (Tilemap / Parallax*)
+- Escenario
+  - Tilemap
+  - Parallax
 - Game Over
 - Pausa*
-- Menú (Jugar / Salir / Créditos*)
+- Menú
+  - Jugar
+  - Salir
+  - Créditos*
 
 Arte visual:
-- Personaje (animaciones: idle / run / attack / hurt / death* / jump*)
-- Enemigo (animaciones: idle / run / attack / hurt / death*)
-- Base (no hace falta que este animada: sana / a medio romper / rota)
-- FX (explosión)
-- Tiles (plataformas / decorado)
-- Fondo (idealmente un parallax)
+- Personaje
+  - Animaciones
+    - idle, run, attack, hurt, death*, jump*
+- Enemigo
+  - Animaciones
+    - idle, run, attack, hurt, death*
+- Base
+  - Estados:
+    - Sana - A medio romper - Rota
+- FX
+  - Explosión
+- Tiles
+  - Plataformas
+  - Decorado*
+- Fondo
+  - Idealmente un parallax, si no estático
 
 Música / Sonido:
 - Un track (idealmente dos: menú y juego)
