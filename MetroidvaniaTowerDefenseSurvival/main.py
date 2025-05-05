@@ -3,6 +3,7 @@ import animations
 import constant
 import color
 from hero import Hero
+from enemy import Enemy
 
 # Inicializar Pygame
 pygame.init()
@@ -14,6 +15,9 @@ pygame.display.set_caption("Soy una ventana!")
 # Variables del personajea
 hero = Hero(400, 600, animations.anim_hero_idle)
 
+# Enemigo
+enemy = Enemy(700, 600)
+
 # Reloj interno
 clock = pygame.time.Clock()
 
@@ -21,12 +25,17 @@ run = True
 while run:
     # FPS
     clock.tick(constant.FPS)
-    
+
+    # Actualizo las animaciones
+    hero.update()
+
+    # DIBUJO
     # Fondo
-    screen.fill(color.BACKGROUNG_COLOR)
-    
-    # Dibujo al Heroe
+    screen.fill(color.BACKGROUNG_COLOR)   
+    # Heroe
     hero.draw(screen)
+    # Enemigo
+    enemy.draw(screen)
     
     # Movimiento y Animaciones
     if not hero.anim_locked:
@@ -40,7 +49,11 @@ while run:
     if hero.is_aura_activated:
         hero.draw_outline(screen, color.GREEN)
 
-    hero.update()
+    # Colisiones
+    if hero.hitbox.colliderect(enemy.hitbox):
+        enemy.color = color.RED
+    else:
+        enemy.color = color.GREEN
 
     # Eventos
     for event in pygame.event.get():

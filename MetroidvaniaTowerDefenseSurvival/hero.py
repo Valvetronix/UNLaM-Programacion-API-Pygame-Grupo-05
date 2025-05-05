@@ -1,23 +1,30 @@
 import pygame
 import animations
 import constant
-
-
+import color
 
 class Hero():
     def __init__(self, x, y, animation):
-        self.flip = False
+        # Forma del personaje
+        self.shape = pygame.Rect(0, 0, constant.HERO_WIDTH, constant.HERO_HEIGHT)
+        self.shape.midbottom = (x, y)
+
+        # Animacion
         self.animation = animation
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
         self.image = self.animation[self.frame_index]
-        self.shape = pygame.Rect(0, 0, constant.HERO_HITBOX_WIDTH, constant.HERO_HITBOX_HEIGHT)
-        self.shape.midbottom = (x, y)
 
-        # Aura (?)
+        # Hitbox
+        self.hitbox = pygame.Rect(0, 0, constant.HERO_HITBOX_WIDTH, constant.HERO_HITBOX_HEIGHT)
+        self.hitbox.midbottom = self.shape.midbottom
+        self.hitbox_offset_x = 70
+        
+        # Outline
         self.mask = pygame.mask.from_surface(self.image)
         self.outline = self.mask.outline()
 
+        self.flip = False
         self.is_moving_left = False
         self.is_moving_right = False
         self.anim_locked = False
@@ -40,6 +47,9 @@ class Hero():
         self.outline = self.mask.outline()
                 
     def draw(self, screen):
+        self.hitbox.x = self.shape.x + self.hitbox_offset_x
+        self.hitbox.y = self.shape.y
+        pygame.draw.rect(screen, color.BLUE, self.hitbox, 1)
         flipped_image = pygame.transform.flip(self.image, self.flip, False)
         screen.blit(flipped_image, self.shape)
 

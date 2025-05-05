@@ -19,10 +19,10 @@ def change_animation(character, animation):
     character.animation = animation
 
 anim_hero_idle = []
-append_frames("Assets\Sprites\hero\hero-idle\hero-idle-", anim_hero_idle, 4)
+append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-idle\hero-idle-", anim_hero_idle, 4)
 
 anim_hero_run = []
-append_frames("Assets\Sprites\hero\hero-run\hero-run-", anim_hero_run, 6)
+append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-run\hero-run-", anim_hero_run, 6)
 
 anim_hero_attack = []
-append_frames("Assets\Sprites\hero\hero-attack\hero-attack-", anim_hero_attack, 5)
+append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-attack\hero-attack-", anim_hero_attack, 5)
