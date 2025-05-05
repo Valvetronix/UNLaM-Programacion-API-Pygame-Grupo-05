@@ -8,7 +8,7 @@ El objetivo es proteger la base de oleadas de enemigos.
 Que debe tener el juego: (Lo marcado con * es opcional, si llegamos con el tiempo)
 
 Programación
-- Héroe (Movimiento / Ataque / Salto*)
+- Héroe (Movimiento [x] / Ataque / Salto*) 
 - Enemigo (Corre hacia la base / Explota si llega a la base / Atacar al héroe si lo intercepta*)
 - Base (Falta definir que es, pero da igual / Recibir daño si un enemigo explota en ella)
 - Colisiones
