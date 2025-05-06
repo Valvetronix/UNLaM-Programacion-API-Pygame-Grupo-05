@@ -24,11 +24,9 @@ class Hero():
         self.mask = pygame.mask.from_surface(self.image)
         self.outline = self.mask.outline()
 
+        self.speed = 5
         self.flip = False
-        self.is_moving_left = False
-        self.is_moving_right = False
         self.anim_locked = False
-        self.is_aura_activated = False
 
     def reset_frame_index(self):
         self.frame_index = 0
@@ -47,30 +45,33 @@ class Hero():
         self.outline = self.mask.outline()
                 
     def draw(self, screen):
-        self.hitbox.x = self.shape.x + self.hitbox_offset_x
-        self.hitbox.y = self.shape.y
-        pygame.draw.rect(screen, color.BLUE, self.hitbox, 1)
+        # Heroe / flip(imagen, bool si flipea x, bool si flipea y)
         flipped_image = pygame.transform.flip(self.image, self.flip, False)
         screen.blit(flipped_image, self.shape)
+
+        # Hitbox
+        self.hitbox.x = self.shape.x + self.hitbox_offset_x
+        self.hitbox.y = self.shape.y
+        pygame.draw.rect(screen, color.RED, self.hitbox, 1)
+
 
     def draw_outline(self, screen, color):
         outline = self.outline
         if self.flip:
             outline = [(self.image.get_width() - x, y) for (x, y) in self.outline]
-
-        # Ajustamos la posición del contorno al centro actual
+        # Ajusto la posición del contorno al centro actual
         adjusted_outline = [(x + self.shape.left, y + self.shape.top) for (x, y) in outline]
         pygame.draw.lines(screen, color, True, adjusted_outline, 2)
 
-
-    def move(self, delta_x, delta_y):
+    def move(self, axis_x, axis_y):
         if not self.anim_locked:
-            if delta_x < 0:
+            self.shape.x += axis_x * self.speed
+            if axis_x < 0:
                 self.flip = True
-            if delta_x > 0:
+            if axis_x > 0:
                 self.flip = False
-            self.shape.x += delta_x
-            self.shape.y += delta_y
+            self.shape.x += axis_x * self.speed
+            #self.shape.y += axis_y * self.speed (el movimiento en el eje Y no lo usamos por el momento)
             self.animation = animations.anim_hero_run
 
     def attack(self):

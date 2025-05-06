@@ -38,16 +38,6 @@ while run:
     enemy.draw(screen)
     
     # Movimiento y Animaciones
-    if not hero.anim_locked:
-        if hero.is_moving_left and not hero.is_moving_right:
-            hero.move(-constant.VELOCITY, 0)
-        elif hero.is_moving_right and not hero.is_moving_left:
-            hero.move(constant.VELOCITY, 0)   
-        else:
-           hero.idle()
-
-    if hero.is_aura_activated:
-        hero.draw_outline(screen, color.GREEN)
 
     # Colisiones
     if hero.hitbox.colliderect(enemy.hitbox):
@@ -55,30 +45,22 @@ while run:
     else:
         enemy.color = color.GREEN
 
+    # Controles
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_a]:
+        hero.move(-1, 0)
+    elif keys[pygame.K_d]:
+        hero.move(1, 0)
+    else:
+        hero.idle()
+    if keys[pygame.K_SPACE]:
+        hero.draw_outline(screen, color.GREEN)
+
     # Eventos
     for event in pygame.event.get():
         # Cerrar el juego
         if event.type == pygame.QUIT:
             run = False
-
-        # CONTROLES
-        # Cuando pulso la tecla:
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                hero.is_moving_left = True
-            if event.key == pygame.K_d:
-                hero.is_moving_right = True
-            if event.key == pygame.K_SPACE:
-                hero.attack()
-            if event.key == pygame.K_1:
-                hero.is_aura_activated = True
-
-        # Cuando suelto la tecla:
-        if event.type == pygame.KEYUP:
-            if event.key == pygame.K_a:
-                hero.is_moving_left = False
-            if event.key == pygame.K_d:
-                hero.is_moving_right = False
 
     pygame.display.update()
 
