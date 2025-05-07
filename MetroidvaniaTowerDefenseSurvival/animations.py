@@ -8,8 +8,8 @@ def scale_image(image, scale):
     return scaled_image
 
 def append_frames(route, animation, frame_count):
-    for i in range (1, frame_count+1):
-        image = pygame.image.load(f"{route}{i}.png")
+    for frame in range (1, frame_count+1):
+        image = pygame.image.load(f"{route}{frame}.png")
         image = scale_image(image, constant.SCALE)
         animation.append(image)
 

@@ -40,27 +40,31 @@ while run:
     # Movimiento y Animaciones
 
     # Colisiones
-    if hero.hitbox.colliderect(enemy.hitbox):
+    if hero.attack_hitbox.colliderect(enemy.hitbox):
         enemy.color = color.RED
     else:
         enemy.color = color.GREEN
 
-    # Controles
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_a]:
-        hero.move(-1, 0)
-    elif keys[pygame.K_d]:
-        hero.move(1, 0)
-    else:
-        hero.idle()
-    if keys[pygame.K_SPACE]:
-        hero.draw_outline(screen, color.GREEN)
+
 
     # Eventos
     for event in pygame.event.get():
+        # Control ataque
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                hero.attack()
         # Cerrar el juego
         if event.type == pygame.QUIT:
             run = False
+
+    # Controles
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        hero.move(-1, 0)
+    elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        hero.move(1, 0)
+    else:
+        hero.idle()
 
     pygame.display.update()
 
