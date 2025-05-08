@@ -9,7 +9,7 @@ El objetivo es proteger la base de oleadas de enemigos.
 ## ¿Que debe tener el juego? 
 Lo marcado con * es opcional, si se llega con el tiempo
 
-###Programación
+### Programación
 - Héroe
   - Movimiento
   - Ataque
@@ -35,7 +35,7 @@ Lo marcado con * es opcional, si se llega con el tiempo
   - Salir
   - Créditos*
 
-###Arte visual:
+### Arte visual:
 - Personaje
   - Animaciones
     - idle, run, attack, hurt, death*, jump*
@@ -54,7 +54,7 @@ Lo marcado con * es opcional, si se llega con el tiempo
   - Idealmente un parallax, si no estático
 - Menu
 
-###Música / Sonido:
+### Música / Sonido:
 - Un track (idealmente dos: menú y juego)
 - Efectos de sonido:
   - Correr
