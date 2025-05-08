@@ -18,6 +18,8 @@ def change_animation(character, animation):
         character.reset_frame_index()
     character.animation = animation
 
+# Animaciones del Heroe
+
 anim_hero_idle = []
 append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-idle\hero-idle-", anim_hero_idle, 4)
 
@@ -26,3 +28,16 @@ append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-run\her
 
 anim_hero_attack = []
 append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-attack\hero-attack-", anim_hero_attack, 5)
+
+# Animaciones del Esqueleto
+
+anim_skeleton_rise = []
+append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\skeleton-rise\skeleton-rise-", anim_skeleton_rise, 4)
+
+anim_skeleton_walk = []
+append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\skeleton\skeleton-", anim_skeleton_walk, 8)
+
+# Animacion general de muerte enemigo
+
+anim_enemy_death = []
+append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\enemy-death\enemy-death-", anim_enemy_death, 5)

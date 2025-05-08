@@ -3,7 +3,7 @@ import animations
 import constant
 import color
 
-class Hero():
+class Hero:
     def __init__(self, x, y, animation):
         # Variables
         self.speed = 5
@@ -31,7 +31,7 @@ class Hero():
         self.update_time = pygame.time.get_ticks()
         self.image = self.animation[self.frame_index]
 
-        # Outline
+        # Outline (puede servir para feedback in-game)
         self.mask = pygame.mask.from_surface(self.image)
         self.outline = self.mask.outline()
         
@@ -45,6 +45,7 @@ class Hero():
         if self.is_attacking:
             cooldown_animation = self.attack_speed
 
+        # Actualizacion de frames de la animacion
         self.image = self.animation[self.frame_index]
         if pygame.time.get_ticks() - self.update_time >= cooldown_animation:
             self.frame_index += 1
