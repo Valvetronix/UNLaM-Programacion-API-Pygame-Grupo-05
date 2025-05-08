@@ -2,12 +2,14 @@
 - Actividad Practica Integradora (API) de Programación
 - 1er Cuatrimestre de la Tenicatura en Desarrollo de Videojuegos (UNLaM) (2025)
 
-Como equipo planteamos la idea de hacer un Side Scroller.
+## ¿De qué se trata?
+EL juego es un Side Scroller.
 El objetivo es proteger la base de oleadas de enemigos.
 
-Que debe tener el juego: (Lo marcado con * es opcional, si llegamos con el tiempo)
+## ¿Que debe tener el juego? 
+Lo marcado con * es opcional, si se llega con el tiempo
 
-Programación
+###Programación
 - Héroe
   - Movimiento
   - Ataque
@@ -33,7 +35,7 @@ Programación
   - Salir
   - Créditos*
 
-Arte visual:
+###Arte visual:
 - Personaje
   - Animaciones
     - idle, run, attack, hurt, death*, jump*
@@ -50,8 +52,9 @@ Arte visual:
   - Decorado*
 - Fondo
   - Idealmente un parallax, si no estático
+- Menu
 
-Música / Sonido:
+###Música / Sonido:
 - Un track (idealmente dos: menú y juego)
 - Efectos de sonido:
   - Correr
@@ -59,3 +62,33 @@ Música / Sonido:
   - Explosion (enemigos / base)
   - Sonido ambiente
   - Sonidos menu*
+
+# Progreso
+## Día 1
+### Movimiento
+![Movimiento](Documentacion/GIFs/1-movimiento.gif)
+
+### Animaciones de movimiento y ataque
+![Animaciones](Documentacion/GIFs/2-animaciones.gif)
+
+### Un Outline (Para el feedback de daño)
+![Outline](Documentacion/GIFs/3-outline.gif)
+
+## Día 2
+### Hitboxes y Colisiones
+![Colisiones](Documentacion/GIFs/4-colisiones.gif)
+
+## Día 3
+### Hitbox del ataque
+![Hitbox](Documentacion/GIFs/5-attack-hitbox.gif)
+
+## Día 4
+### Enemigo
+![Enemigo](Documentacion/GIFs/6-enemigo.gif)
+
+### Animación de spawn
+![Spawn](Documentacion/GIFs/7-spawn.gif)
+
+### Pool de enemigos
+![Spawn](Documentacion/GIFs/8-enemigos.gif)
+
