@@ -85,7 +85,7 @@ class Enemy:
 
         # Inicia la animación de muerte
         if not self.dying:
-            self.animation = animations.anim_enemy_death
+            self.animation = animations.ANIM_ENEMY_DEATH
             self.frame_index = 0
             self.update_time = pygame.time.get_ticks()
             self.dying = True
@@ -109,7 +109,7 @@ class Skeleton(Enemy):
         )
 
         # Animación de aparición desde el suelo
-        self.animation = animations.anim_skeleton_rise
+        self.animation = animations.ANIM_SKELETON_RISE
         self.image = self.animation[self.frame_index]
         self.anim_locked = True  # Bloqueo inicial hasta que termine la animación de awake
         self.souls = souls
@@ -120,12 +120,12 @@ class Skeleton(Enemy):
             self.souls.append(soul)
             self.alive = False
         else:
-            self.animation = animations.anim_skeleton_walk
+            self.animation = animations.ANIM_SKELETON_WALK
             self.reset_frame_index()
 
     def walk(self):
         # Asigno la animación de caminar antes de mover
-        self.animation = animations.anim_skeleton_walk
+        self.animation = animations.ANIM_SKELETON_WALK
         super().walk()
 
 class Soul:

@@ -1,6 +1,17 @@
 import pygame
 import constant
 
+ANIM_HERO_IDLE = []
+ANIM_HERO_RUN = []
+ANIM_HERO_ATTACK = []
+
+ANIM_SKELETON_RISE = []
+ANIM_SKELETON_WALK = []
+ANIM_ENEMY_DEATH = []
+
+TOWER_IMAGE = None
+BACKGROUND_IMAGE = None
+
 def scale_image(image, scale):
     scaled_image = pygame.transform.scale(image, 
                                       (image.get_width() * scale, 
@@ -18,26 +29,36 @@ def change_animation(character, animation):
         character.reset_frame_index()
     character.animation = animation
 
-# Animaciones del Heroe
+def load_assets():
+    global ANIM_HERO_IDLE, ANIM_HERO_RUN, ANIM_HERO_ATTACK
+    global ANIM_SKELETON_RISE, ANIM_SKELETON_WALK, ANIM_ENEMY_DEATH
+    global TOWER_IMAGE, BACKGROUND_IMAGE
+    # Torre
+    TOWER_IMAGE = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment\sliced-objects\statue.png").convert_alpha()
 
-anim_hero_idle = []
-append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-idle\hero-idle-", anim_hero_idle, 4)
+    # Background
+    BACKGROUND_IMAGE = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment/background.png").convert_alpha()
 
-anim_hero_run = []
-append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-run\hero-run-", anim_hero_run, 6)
+    # Animaciones del Heroe
 
-anim_hero_attack = []
-append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-attack\hero-attack-", anim_hero_attack, 5)
+    ANIM_HERO_IDLE = []
+    append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-idle\hero-idle-", ANIM_HERO_IDLE, 4)
 
-# Animaciones del Esqueleto
+    ANIM_HERO_RUN = []
+    append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-run\hero-run-", ANIM_HERO_RUN, 6)
 
-anim_skeleton_rise = []
-append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\skeleton-rise\skeleton-rise-", anim_skeleton_rise, 4)
+    ANIM_HERO_ATTACK = []
+    append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\hero\hero-attack\hero-attack-", ANIM_HERO_ATTACK, 5)
 
-anim_skeleton_walk = []
-append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\skeleton\skeleton-", anim_skeleton_walk, 8)
+    # Animaciones del Esqueleto
 
-# Animacion general de muerte enemigo
+    ANIM_SKELETON_RISE = []
+    append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\skeleton-rise\skeleton-rise-", ANIM_SKELETON_RISE, 4)
 
-anim_enemy_death = []
-append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\enemy-death\enemy-death-", anim_enemy_death, 5)
+    ANIM_SKELETON_WALK = []
+    append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\skeleton\skeleton-", ANIM_SKELETON_WALK, 8)
+
+    # Animacion general de muerte enemigo
+
+    ANIM_ENEMY_DEATH = []
+    append_frames("MetroidvaniaTowerDefenseSurvival\Assets\Sprites\enemy-death\enemy-death-", ANIM_ENEMY_DEATH, 5)

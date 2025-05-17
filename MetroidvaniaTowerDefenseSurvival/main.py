@@ -14,11 +14,14 @@ pygame.init()
 screen = pygame.display.set_mode((constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)) 
 pygame.display.set_caption("Soy una ventana!")
 
+# Cargo los assets
+animations.load_assets()
+
 # Reloj interno
 clock = pygame.time.Clock()
 
 # Variables del personaje
-hero = Hero(400, constant.SCREEN_HEIGHT, animations.anim_hero_idle)
+hero = Hero(400, constant.SCREEN_HEIGHT, animations.ANIM_HERO_IDLE)
 
 # Lista de enemigos
 enemies = []
@@ -30,8 +33,20 @@ tower = Building(constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT)
 # Funcion para spawnear enemigos
 def spawn_enemy():
     if len(enemies) < constant.MAX_ENEMIES:
+
+        # Elijio entre la primer (0) o cuarta seccion (4) de la pantalla para asignar a la zona de spawn
+        spawn_zone = random.choice([0, 4])
+        spawn_zone_width = constant.SCREEN_WIDTH // 4
+        
+        # Calcular los límites del tercio elegido
+        x_min = spawn_zone * spawn_zone_width
+        x_max = x_min + spawn_zone_width
+
+        # Genero una posicion random dentro de la zona de spawn
+        x_pos = random.randint(x_min, x_max)
+
         # Genero un enemigo con una coordenada random en el eje X
-        enemy = Skeleton(random.randint(0, constant.SCREEN_WIDTH), constant.SCREEN_HEIGHT, souls)
+        enemy = Skeleton(x_pos, constant.SCREEN_HEIGHT, souls)
         # Lo agrego a la lista de enemigos
         enemies.append(enemy)
 
@@ -41,6 +56,8 @@ while run:
     # FPS
     clock.tick(constant.FPS)
 
+
+
     # Actualizo al Heroe
     hero.update()
 
@@ -48,7 +65,10 @@ while run:
     spawn_enemy()
 
     # Fondo
-    screen.fill(color.BACKGROUNG_COLOR)
+    screen_shape = pygame.Rect(0, 0, constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
+    background_image = animations.BACKGROUND_IMAGE
+    screen.blit(pygame.transform.scale(background_image, (constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)), (0, 0), screen_shape)
+
 
     # Torre
     tower.draw(screen)

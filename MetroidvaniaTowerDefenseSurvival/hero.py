@@ -6,11 +6,12 @@ import color
 class Hero:
     def __init__(self, x, y, animation):
         # Atributos
+        self.experience = 0
         self.__speed = 5
-        self.attack_speed = 80
-        self.flip = False
-        self.anim_locked = False
-        self.is_attacking = False
+        self.__attack_speed = 80
+        self.__flip = False
+        self.__anim_locked = False
+        self.__is_attacking = False
         
         # Forma del personaje
         self.shape = pygame.Rect(0, 0, constant.HERO_WIDTH, constant.HERO_HEIGHT)
@@ -24,6 +25,9 @@ class Hero:
         # Hitbox (WEAPON)
         self.attack_hitbox = pygame.Rect(0, 0, constant.HERO_ATTACK_HITBOX_WIDTH, constant.HERO_ATTACK_HITBOX_HEIGHT)
         self.attack_hitbox_active = False
+
+        # Barra de experiencia
+        self.experience_bar = pygame.Rect(32, 32, constant.SCREEN_WIDTH - 64, 10)
 
         # Animacion
         self.animation = animation
@@ -42,8 +46,8 @@ class Hero:
         # Velocidad base de las animaciones
         cooldown_animation = 150
         # Velocidad de la animacion de ataque
-        if self.is_attacking:
-            cooldown_animation = self.attack_speed
+        if self.__is_attacking:
+            cooldown_animation = self.__attack_speed
 
         # Actualizacion de frames de la animacion
         self.image = self.animation[self.frame_index]
@@ -55,22 +59,22 @@ class Hero:
         if self.frame_index >= len(self.animation):
             self.reset_frame_index()
             # Deja de estar anim_locked
-            if self.anim_locked:
-                self.anim_locked = False
+            if self.__anim_locked:
+                self.__anim_locked = False
             # Remuevo hitbox de ataque
             if self.attack_hitbox_active:
                 self.attack_hitbox_active = False
                 # Con esto elimino el hitbox, de otra forma seguiría estando en el ultimo lugar donde ataco
                 self.attack_hitbox.width = 0
                 self.attack_hitbox.height = 0
-                self.is_attacking = False
+                self.__is_attacking = False
 
         self.mask = pygame.mask.from_surface(self.image)
         self.outline = self.mask.outline()
                 
     def draw(self, screen):
         # Heroe / flip(imagen, bool si flipea x, bool si flipea y)
-        flipped_image = pygame.transform.flip(self.image, self.flip, False)
+        flipped_image = pygame.transform.flip(self.image, self.__flip, False)
         screen.blit(flipped_image, self.shape)
 
         # Hitbox (HERO)
@@ -81,47 +85,51 @@ class Hero:
         if self.attack_hitbox_active:
             pygame.draw.rect(screen, color.RED, self.attack_hitbox, 2)
 
+        # Barra de Experiencia:
+        pygame.draw.rect(screen, color.GRAY, self.experience_bar)
+
+
     def update_hitboxes(self):
-        if self.flip:
+        if self.__flip:
             self.hitbox.x = self.shape.x + self.hitbox_offset_x - 20    # Número mágico para evitar que el hitbox quede desplazado al darse vuelta el personaje (TO DO: Encontrar una solucion y evitar el hardcodeo)
         else:
             self.hitbox.x = self.shape.x + self.hitbox_offset_x
         self.hitbox.bottom = self.shape.bottom
         if self.attack_hitbox_active:
-            if self.flip:
+            if self.__flip:
                 self.attack_hitbox.midright = self.hitbox.midleft
             else:
                 self.attack_hitbox.midleft = self.hitbox.midright
 
     def move(self, axis_x, axis_y):
-        if not self.anim_locked:            
+        if not self.__anim_locked:            
             if axis_x < 0:
-                self.flip = True
+                self.__flip = True
             if axis_x > 0:
-                self.flip = False
+                self.__flip = False
             self.shape.x += axis_x * self.__speed
             #self.shape.y += axis_y * self.speed (el movimiento en el eje Y no lo usamos por el momento)
-            self.animation = animations.anim_hero_run
+            self.animation = animations.ANIM_HERO_RUN
 
     def attack(self):
-        if not self.anim_locked:
-            self.anim_locked = True
-            self.is_attacking = True
+        if not self.__anim_locked:
+            self.__anim_locked = True
+            self.__is_attacking = True
             self.reset_frame_index()
-            self.animation = animations.anim_hero_attack
+            self.animation = animations.ANIM_HERO_ATTACK
         
             self.attack_hitbox_active = True
             self.attack_hitbox.width = constant.HERO_ATTACK_HITBOX_WIDTH
             self.attack_hitbox.height = constant.HERO_ATTACK_HITBOX_HEIGHT
     
     def idle(self):
-        if self.animation != animations.anim_hero_idle and not self.anim_locked:
+        if self.animation != animations.ANIM_HERO_IDLE and not self.__anim_locked:
             self.reset_frame_index()
-            self.animation = animations.anim_hero_idle
+            self.animation = animations.ANIM_HERO_IDLE
 
     def draw_outline(self, screen, color):
         outline = self.outline
-        if self.flip:
+        if self.__flip:
             outline = [(self.image.get_width() - x, y) for (x, y) in self.outline]
         # Ajusto la posición del contorno al centro actual
         adjusted_outline = [(x + self.shape.left, y + self.shape.top) for (x, y) in outline]
