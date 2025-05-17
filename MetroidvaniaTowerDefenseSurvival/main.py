@@ -50,13 +50,16 @@ def spawn_enemy():
         # Lo agrego a la lista de enemigos
         enemies.append(enemy)
 
+def draw_background():
+    background_shape = pygame.Rect(0, 0, constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
+    background_image = animations.BACKGROUND_IMAGE
+    screen.blit(pygame.transform.scale(background_image, (constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)), (0, 0), background_shape)
+
 # Ejecuto el juego
 run = True
 while run:
     # FPS
     clock.tick(constant.FPS)
-
-
 
     # Actualizo al Heroe
     hero.update()
@@ -65,9 +68,7 @@ while run:
     spawn_enemy()
 
     # Fondo
-    screen_shape = pygame.Rect(0, 0, constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
-    background_image = animations.BACKGROUND_IMAGE
-    screen.blit(pygame.transform.scale(background_image, (constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)), (0, 0), screen_shape)
+    draw_background()
 
 
     # Torre
@@ -104,6 +105,8 @@ while run:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 hero.attack()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+                print(pygame.mouse.get_pos())
         # Cerrar el juego
         if event.type == pygame.QUIT:
             run = False

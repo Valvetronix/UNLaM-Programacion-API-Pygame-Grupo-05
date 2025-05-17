@@ -11,6 +11,8 @@ ANIM_ENEMY_DEATH = []
 
 TOWER_IMAGE = None
 BACKGROUND_IMAGE = None
+BACKGROUND_IMAGE_2 = None
+BACKGROUND_IMAGE_3 = None
 
 def scale_image(image, scale):
     scaled_image = pygame.transform.scale(image, 
@@ -38,6 +40,8 @@ def load_assets():
 
     # Background
     BACKGROUND_IMAGE = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment/background.png").convert_alpha()
+    BACKGROUND_IMAGE_2 = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment/mountains.png").convert_alpha()
+    BACKGROUND_IMAGE_3 = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment/graveyard.png").convert_alpha()
 
     # Animaciones del Heroe
 

@@ -116,7 +116,7 @@ class Skeleton(Enemy):
 
     def on_animation_unlock(self):
         if self.dying:
-            soul = Soul(self.shape.centerx, self.shape.centery, [constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2])
+            soul = Soul(self.shape.centerx, self.shape.centery, [1030, 460])
             self.souls.append(soul)
             self.alive = False
         else:
