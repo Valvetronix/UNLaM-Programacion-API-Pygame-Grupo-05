@@ -5,8 +5,8 @@ import color
 
 class Hero:
     def __init__(self, x, y, animation):
-        # Variables
-        self.speed = 5
+        # Atributos
+        self.__speed = 5
         self.attack_speed = 80
         self.flip = False
         self.anim_locked = False
@@ -99,7 +99,7 @@ class Hero:
                 self.flip = True
             if axis_x > 0:
                 self.flip = False
-            self.shape.x += axis_x * self.speed
+            self.shape.x += axis_x * self.__speed
             #self.shape.y += axis_y * self.speed (el movimiento en el eje Y no lo usamos por el momento)
             self.animation = animations.anim_hero_run
 

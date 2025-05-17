@@ -3,7 +3,8 @@ import animations
 import constant
 import color
 from hero import Hero
-from enemy import Enemy
+from enemy import Skeleton
+from building import Building
 import random
 
 # Inicializar Pygame
@@ -16,17 +17,21 @@ pygame.display.set_caption("Soy una ventana!")
 # Reloj interno
 clock = pygame.time.Clock()
 
-# Variables del personajea
-hero = Hero(400, 600, animations.anim_hero_idle)
+# Variables del personaje
+hero = Hero(400, constant.SCREEN_HEIGHT, animations.anim_hero_idle)
 
 # Lista de enemigos
 enemies = []
+souls = []
+
+# Tower of Death
+tower = Building(constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT)
 
 # Funcion para spawnear enemigos
 def spawn_enemy():
     if len(enemies) < constant.MAX_ENEMIES:
         # Genero un enemigo con una coordenada random en el eje X
-        enemy = Enemy(random.randint(0, constant.SCREEN_WIDTH), 600)
+        enemy = Skeleton(random.randint(0, constant.SCREEN_WIDTH), constant.SCREEN_HEIGHT, souls)
         # Lo agrego a la lista de enemigos
         enemies.append(enemy)
 
@@ -45,6 +50,9 @@ while run:
     # Fondo
     screen.fill(color.BACKGROUNG_COLOR)
 
+    # Torre
+    tower.draw(screen)
+
     # Heroe
     hero.draw(screen)
 
@@ -62,6 +70,13 @@ while run:
         else:
             enemy.update()
             enemy.draw(screen)
+
+    # Recorro la lista de Almas
+    for soul in souls[:]:
+        soul.update()
+        soul.draw(screen)
+        if soul.arrived:
+            souls.remove(soul)
     
     # Eventos
     for event in pygame.event.get():
