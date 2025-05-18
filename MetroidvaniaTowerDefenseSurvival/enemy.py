@@ -40,7 +40,7 @@ class Enemy:
     def draw(self, screen):
         flipped_image = pygame.transform.flip(self.image, self.flip, False)
         screen.blit(flipped_image, self.shape)
-        #pygame.draw.rect(screen, color.RED, self.hitbox, 0 )
+        #pygame.draw.rect(screen, color.RED, self.hitbox, 1)
 
     def reset_frame_index(self):
         self.frame_index = 0
@@ -116,7 +116,7 @@ class Skeleton(Enemy):
 
     def on_animation_unlock(self):
         if self.dying:
-            soul = Soul(self.shape.centerx, self.shape.centery, [1030, 460])
+            soul = Soul(self.shape.centerx, self.shape.centery, [constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2])
             self.souls.append(soul)
             self.alive = False
         else:
@@ -129,7 +129,7 @@ class Skeleton(Enemy):
         super().walk()
 
 class Soul:
-    def __init__(self, x, y, target_position, speed = 2):
+    def __init__(self, x, y, target_position, speed = 2, value = 10):
         self.shape = pygame.Rect(0, 0, constant.SOUL_WIDTH, constant.SOUL_HEIGHT)
         self.shape.midbottom = (x, y)
         self.color = color.CYAN
@@ -137,6 +137,7 @@ class Soul:
         self.target = pygame.Vector2(target_position)
         self.position = pygame.Vector2(x, y)
         self.speed = speed
+        self.value = value
 
         self.arrived = False
 

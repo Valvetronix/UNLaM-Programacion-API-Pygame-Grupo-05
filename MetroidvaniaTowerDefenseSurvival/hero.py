@@ -2,16 +2,24 @@ import pygame
 import animations
 import constant
 import color
+import time
 
 class Hero:
     def __init__(self, x, y, animation):
         # Atributos
-        self.experience = 0
+        self.__level = 1
+        self.__experience = 0
+        self.__max_experience = 100
         self.__speed = 5
         self.__attack_speed = 80
         self.__flip = False
         self.__anim_locked = False
         self.__is_attacking = False
+
+        # Fuente
+        self.font = pygame.font.Font("MetroidvaniaTowerDefenseSurvival\Assets\Fonts\Caudex-Regular.ttf", 96)
+        self.text_timer = 0
+        self.text = ""
         
         # Forma del personaje
         self.shape = pygame.Rect(0, 0, constant.HERO_WIDTH, constant.HERO_HEIGHT)
@@ -28,6 +36,7 @@ class Hero:
 
         # Barra de experiencia
         self.experience_bar = pygame.Rect(32, 32, constant.SCREEN_WIDTH - 64, 10)
+        self.experience_bar_fill = pygame.Rect(32, 32, self.experience, 10)
 
         # Animacion
         self.animation = animation
@@ -38,6 +47,32 @@ class Hero:
         # Outline (puede servir para feedback in-game)
         self.mask = pygame.mask.from_surface(self.image)
         self.outline = self.mask.outline()
+
+    ### Encapsulamiento ###
+    @property
+    def experience(self):
+        return self.__experience
+        
+    @experience.setter
+    def experience(self, value):
+        self.__experience = max(0, min(value, self.__max_experience))
+        if self.experience >= self.__max_experience:
+            self.level_up()
+
+    @property
+    def level(self):
+        return self.__level
+
+    def level_up(self):
+        self.__level += 1
+        self.__experience = 0
+        self.__max_experience += 25  # Aumentar dificultad
+        self.text = "Level up"
+        self.trigger_text()
+        print(f"Subiste al nivel {self.__level}")
+
+    def trigger_text(self, duration = 5):  # default: medio segundo
+        self.text_timer = time.time() + duration
         
     def reset_frame_index(self):
         self.frame_index = 0
@@ -69,6 +104,10 @@ class Hero:
                 self.attack_hitbox.height = 0
                 self.__is_attacking = False
 
+        # Update de la barra llena de experiencia:
+        self.experience_bar_fill = pygame.Rect(32, 32, self.experience, 10)
+            
+        # Outline
         self.mask = pygame.mask.from_surface(self.image)
         self.outline = self.mask.outline()
                 
@@ -79,15 +118,25 @@ class Hero:
 
         # Hitbox (HERO)
         self.update_hitboxes()
-        pygame.draw.rect(screen, color.RED, self.hitbox, 1)
+        #pygame.draw.rect(screen, color.RED, self.hitbox, 1)
 
         # Hitbox (WEAPON)
-        if self.attack_hitbox_active:
-            pygame.draw.rect(screen, color.RED, self.attack_hitbox, 2)
+        #if self.attack_hitbox_active:
+        #    pygame.draw.rect(screen, color.RED, self.attack_hitbox, 2)
 
         # Barra de Experiencia:
         pygame.draw.rect(screen, color.GRAY, self.experience_bar)
+        fill_width = (self.experience / self.__max_experience) * self.experience_bar.width
+        self.experience_bar_fill = pygame.Rect(self.experience_bar.left, self.experience_bar.top, fill_width, self.experience_bar.height)
+        pygame.draw.rect(screen, color.GREEN, self.experience_bar_fill)
 
+        # Texto en pantalla
+        if time.time() < self.text_timer:
+            
+            text_to_show = self.font.render(self.text, True, (color.WHITE))
+            text_pos = text_to_show.get_rect()
+            text_pos.center = (constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 4)
+            screen.blit(text_to_show, text_pos)
 
     def update_hitboxes(self):
         if self.__flip:
@@ -134,4 +183,5 @@ class Hero:
         # Ajusto la posición del contorno al centro actual
         adjusted_outline = [(x + self.shape.left, y + self.shape.top) for (x, y) in outline]
         pygame.draw.lines(screen, color, True, adjusted_outline, 2)
+        
 

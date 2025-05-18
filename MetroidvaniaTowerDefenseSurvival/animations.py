@@ -11,8 +11,8 @@ ANIM_ENEMY_DEATH = []
 
 TOWER_IMAGE = None
 BACKGROUND_IMAGE = None
-BACKGROUND_IMAGE_2 = None
-BACKGROUND_IMAGE_3 = None
+MOUNTAINS_IMAGE = None
+GRAVEYARD_IMAGE = None
 
 def scale_image(image, scale):
     scaled_image = pygame.transform.scale(image, 
@@ -34,14 +34,14 @@ def change_animation(character, animation):
 def load_assets():
     global ANIM_HERO_IDLE, ANIM_HERO_RUN, ANIM_HERO_ATTACK
     global ANIM_SKELETON_RISE, ANIM_SKELETON_WALK, ANIM_ENEMY_DEATH
-    global TOWER_IMAGE, BACKGROUND_IMAGE
+    global TOWER_IMAGE, BACKGROUND_IMAGE, MOUNTAINS_IMAGE, GRAVEYARD_IMAGE
     # Torre
     TOWER_IMAGE = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment\sliced-objects\statue.png").convert_alpha()
 
     # Background
     BACKGROUND_IMAGE = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment/background.png").convert_alpha()
-    BACKGROUND_IMAGE_2 = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment/mountains.png").convert_alpha()
-    BACKGROUND_IMAGE_3 = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment/graveyard.png").convert_alpha()
+    MOUNTAINS_IMAGE = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment/mountains.png").convert_alpha()
+    GRAVEYARD_IMAGE = pygame.image.load("MetroidvaniaTowerDefenseSurvival\Assets\Environment/graveyard.png").convert_alpha()
 
     # Animaciones del Heroe
 

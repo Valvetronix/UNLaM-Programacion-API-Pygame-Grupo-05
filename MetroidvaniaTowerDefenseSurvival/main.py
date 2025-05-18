@@ -28,14 +28,14 @@ enemies = []
 souls = []
 
 # Tower of Death
-tower = Building(constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT)
+tower = Building(constant.SCREEN_WIDTH / 2 - 64, constant.SCREEN_HEIGHT)
 
 # Funcion para spawnear enemigos
 def spawn_enemy():
     if len(enemies) < constant.MAX_ENEMIES:
 
-        # Elijio entre la primer (0) o cuarta seccion (4) de la pantalla para asignar a la zona de spawn
-        spawn_zone = random.choice([0, 4])
+        # Elijio entre la primer (0) o cuarta seccion (3) de la pantalla para asignar a la zona de spawn
+        spawn_zone = random.choice([0, 3])
         spawn_zone_width = constant.SCREEN_WIDTH // 4
         
         # Calcular los límites del tercio elegido
@@ -51,25 +51,29 @@ def spawn_enemy():
         enemies.append(enemy)
 
 def draw_background():
-    background_shape = pygame.Rect(0, 0, constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
     background_image = animations.BACKGROUND_IMAGE
-    screen.blit(pygame.transform.scale(background_image, (constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)), (0, 0), background_shape)
+    screen.blit(pygame.transform.scale(background_image, (constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)), (0, 0))
 
-# Ejecuto el juego
-run = True
-while run:
-    # FPS
-    clock.tick(constant.FPS)
+    mountain_width = constant.SCREEN_WIDTH / 2
+    mountain_height = constant.SCREEN_HEIGHT / 2
+    mountain_image = pygame.transform.scale(animations.MOUNTAINS_IMAGE, (mountain_width, mountain_height))
 
+    for i in range(4):
+        x = i * mountain_image.get_width()
+        y = constant.SCREEN_HEIGHT - mountain_height
+        screen.blit(mountain_image, (x, y))
+
+    graveyard_width = constant.SCREEN_WIDTH
+    graveyard_height = constant.SCREEN_HEIGHT/3
+    graveyard_image = pygame.transform.scale(animations.GRAVEYARD_IMAGE, (graveyard_width, graveyard_height))
+    screen.blit(graveyard_image, (0, constant.SCREEN_HEIGHT - graveyard_height))
+
+def update_and_draw():
     # Actualizo al Heroe
     hero.update()
 
-    # Llamo a la funcion para spawnear enemigos
-    spawn_enemy()
-
     # Fondo
     draw_background()
-
 
     # Torre
     tower.draw(screen)
@@ -81,6 +85,11 @@ while run:
     for enemy in enemies:
         # Detecto la colision del ataque del Heroe con el Enemigo
         if hero.attack_hitbox.colliderect(enemy.hitbox):
+            enemy.destroy()
+
+        # Detecto si impacta la torre
+        if tower.hitbox.colliderect(enemy.hitbox):
+            tower.trigger_outline()
             enemy.destroy()
 
         # Una vez muerto lo remuevo de la lista de enemigos
@@ -97,8 +106,21 @@ while run:
         soul.update()
         soul.draw(screen)
         if soul.arrived:
+            hero.experience += soul.value
             souls.remove(soul)
-    
+
+
+# Ejecuto el juego
+run = True
+while run:
+    # FPS
+    clock.tick(constant.FPS)
+
+    # Llamo a la funcion para spawnear enemigos
+    spawn_enemy()
+
+    update_and_draw()
+  
     # Eventos
     for event in pygame.event.get():
         # Boton de ataque
