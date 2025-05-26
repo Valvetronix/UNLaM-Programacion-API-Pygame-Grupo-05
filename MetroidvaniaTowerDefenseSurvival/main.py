@@ -81,7 +81,7 @@ def update_and_draw():
     hero.draw(screen)
 
     # HUD
-    hud.update
+    hud.update()
     hud.update_stats(hero.experience, hero.max_experience)
     hud.draw(screen)
 
