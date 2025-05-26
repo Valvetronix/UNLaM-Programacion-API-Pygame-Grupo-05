@@ -1,3 +1,4 @@
+import pygame
 #Configuración de la pantalla
 SCREEN_WIDTH = 1920
 SCREEN_HEIGHT = 1080
@@ -41,3 +42,7 @@ VELOCITY = 5
 
 #Escala
 SCALE = 2
+
+#Events
+LEVEL_UP_EVENT = pygame.USEREVENT+1
+GAME_OVER_EVENT = pygame.USEREVENT+2

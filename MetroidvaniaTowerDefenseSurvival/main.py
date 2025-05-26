@@ -1,11 +1,11 @@
 import pygame
 import animations
 import constant
-import color
 from hero import Hero
 from enemy import Skeleton
 from building import Building
 import random
+from HUD import HUD
 
 # Inicializar Pygame
 pygame.init()
@@ -19,6 +19,7 @@ animations.load_assets()
 
 # Reloj interno
 clock = pygame.time.Clock()
+hud = HUD()
 
 # Variables del personaje
 hero = Hero(400, constant.SCREEN_HEIGHT, animations.ANIM_HERO_IDLE)
@@ -69,9 +70,6 @@ def draw_background():
     screen.blit(graveyard_image, (0, constant.SCREEN_HEIGHT - graveyard_height))
 
 def update_and_draw():
-    # Actualizo al Heroe
-    hero.update()
-
     # Fondo
     draw_background()
 
@@ -79,7 +77,13 @@ def update_and_draw():
     tower.draw(screen)
 
     # Heroe
+    hero.update()
     hero.draw(screen)
+
+    # HUD
+    hud.update
+    hud.update_stats(hero.experience, hero.max_experience)
+    hud.draw(screen)
 
     # Recorro la lista de enemigos
     for enemy in enemies:
@@ -123,6 +127,13 @@ while run:
   
     # Eventos
     for event in pygame.event.get():
+        
+        #Level up event
+        if event.type == constant.LEVEL_UP_EVENT:
+            hud.level_alert(hero.level)
+
+        if event.type == constant.GAME_OVER_EVENT:
+            hud.game_over_alert
         # Boton de ataque
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
