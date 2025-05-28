@@ -16,8 +16,6 @@ class Hero:
         self.__anim_locked = False
         self.__is_attacking = False
 
-
-        
         # Forma del personaje
         self.shape = pygame.Rect(0, 0, constant.HERO_WIDTH, constant.HERO_HEIGHT)
         self.shape.midbottom = (x, y)
@@ -38,6 +36,8 @@ class Hero:
         # Animacion
         self.animation = animation
         self.frame_index = 0
+        # Lambda para resetear el frame_index a 0 luego de finalizar una animación
+        self.reset_frame_index = lambda: setattr(self, 'frame_index', 0)
         self.update_time = pygame.time.get_ticks()
         self.image = self.animation[self.frame_index]
 
@@ -64,23 +64,13 @@ class Hero:
     def level(self):
         return self.__level
 
-
-
     def level_up(self):
         self.__level += 1
         self.__experience = 0
-        self.__max_experience += 25 
-        self.text = "Level up"
-        self.trigger_text()     
+        self.__max_experience += 25     
         # EVENTO LEVEL UP
         pygame.event.post(pygame.event.Event(constant.LEVEL_UP_EVENT))
 
-
-    def trigger_text(self, duration = 5):  # default: medio segundo
-        self.text_timer = time.time() + duration
-        
-    def reset_frame_index(self):
-        self.frame_index = 0
 
     def update(self):
         # Velocidad base de las animaciones
@@ -123,17 +113,11 @@ class Hero:
 
         # Hitbox (HERO)
         self.update_hitboxes()
-        pygame.draw.rect(screen, color.RED, self.hitbox, 1)
+        #pygame.draw.rect(screen, color.RED, self.hitbox, 1)
 
         # Hitbox (WEAPON)
-        if self.attack_hitbox_active:
-            pygame.draw.rect(screen, color.RED, self.attack_hitbox, 2)
-
-        # Barra de Experiencia:
-        pygame.draw.rect(screen, color.GRAY, self.experience_bar)
-        fill_width = (self.experience / self.__max_experience) * self.experience_bar.width
-        self.experience_bar_fill = pygame.Rect(self.experience_bar.left, self.experience_bar.top, fill_width, self.experience_bar.height)
-        pygame.draw.rect(screen, color.GREEN, self.experience_bar_fill)
+        #if self.attack_hitbox_active:
+        #    pygame.draw.rect(screen, color.RED, self.attack_hitbox, 2)
 
     def update_hitboxes(self):
         if self.__flip:

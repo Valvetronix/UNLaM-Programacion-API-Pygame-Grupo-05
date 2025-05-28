@@ -12,17 +12,20 @@ pygame.init()
 
 # Crear Pantalla
 screen = pygame.display.set_mode((constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)) 
-pygame.display.set_caption("Soy una ventana!")
+pygame.display.set_caption("Tower of Death")
 
 # Cargo los assets
 animations.load_assets()
+
+# Icono de la ventana
+pygame.display.set_icon(animations.WINDOW_ICON)
 
 # Reloj interno
 clock = pygame.time.Clock()
 hud = HUD()
 
-# Variables del personaje
-hero = Hero(400, constant.SCREEN_HEIGHT, animations.ANIM_HERO_IDLE)
+# Creo al personaje
+hero = Hero(400, constant.SCREEN_HEIGHT - constant.GROUND_HEIGHT, animations.ANIM_HERO_IDLE)
 
 # Lista de enemigos
 enemies = []
@@ -47,7 +50,7 @@ def spawn_enemy():
         x_pos = random.randint(x_min, x_max)
 
         # Genero un enemigo con una coordenada random en el eje X
-        enemy = Skeleton(x_pos, constant.SCREEN_HEIGHT, souls)
+        enemy = Skeleton(x_pos, constant.SCREEN_HEIGHT - constant.GROUND_HEIGHT, souls)
         # Lo agrego a la lista de enemigos
         enemies.append(enemy)
 
@@ -69,12 +72,18 @@ def draw_background():
     graveyard_image = pygame.transform.scale(animations.GRAVEYARD_IMAGE, (graveyard_width, graveyard_height))
     screen.blit(graveyard_image, (0, constant.SCREEN_HEIGHT - graveyard_height))
 
+
+
 def update_and_draw():
     # Fondo
     draw_background()
 
     # Torre
     tower.draw(screen)
+
+    # Tierra
+    ground_image = animations.GROUND_IMAGE
+    screen.blit(ground_image, (0, constant.SCREEN_HEIGHT - 96))
 
     # Heroe
     hero.update()

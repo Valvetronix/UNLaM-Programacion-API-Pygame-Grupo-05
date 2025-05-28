@@ -3,7 +3,6 @@ import color
 import constant
 import animations
 import random
-
 import pygame
 import color
 import constant
@@ -47,7 +46,7 @@ class Enemy:
 
     def update(self):
         if not self.dying and not self.anim_locked:
-            self.walk()
+            self.move()
             # Detecto si toca los bordes de la pantalla e invierto la dirección
             if self.shape.left <= 0:
                 self.direction = 1
@@ -69,7 +68,7 @@ class Enemy:
                 self.anim_locked = False
             self.reset_frame_index()
 
-    def walk(self):
+    def move(self):
         self.shape.x += self.direction
         self.flip = self.direction > 0
         self.update_hitboxes()
@@ -123,37 +122,63 @@ class Skeleton(Enemy):
             self.animation = animations.ANIM_SKELETON_WALK
             self.reset_frame_index()
 
-    def walk(self):
+    def move(self):
         # Asigno la animación de caminar antes de mover
         self.animation = animations.ANIM_SKELETON_WALK
-        super().walk()
+        super().move()
 
 class Soul:
-    def __init__(self, x, y, target_position, speed = 2, value = 10):
-        self.shape = pygame.Rect(0, 0, constant.SOUL_WIDTH, constant.SOUL_HEIGHT)
-        self.shape.midbottom = (x, y)
-        self.color = color.CYAN
+    def __init__(self, x, y, target_position, speed=3, value=10):
+        self.animation = animations.ANIM_SOUL
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
+        self.image = self.animation[self.frame_index]
 
-        self.target = pygame.Vector2(target_position)
         self.position = pygame.Vector2(x, y)
+        self.target = pygame.Vector2(target_position)
         self.speed = speed
         self.value = value
-
         self.arrived = False
 
-    def update(self):
-        # Dirección hacia la torre
-        direction = self.target - self.position
-        distance = direction.length()
+        self.shape = self.image.get_rect(midbottom=(x, y))
 
-        if distance < self.speed:
-            self.arrived = True
-        else:
-            direction = direction.normalize()
-            self.position += direction * self.speed
-            self.shape.center = (round(self.position.x), round(self.position.y))
+    def update(self):
+        # Animación
+        cooldown = 150
+        self.image = self.animation[self.frame_index]
+        if pygame.time.get_ticks() - self.update_time >= cooldown:
+            self.frame_index = (self.frame_index + 1) % len(self.animation)
+            self.update_time = pygame.time.get_ticks()
+
+        # Movimiento
+        if not self.arrived:
+            direction = self.target - self.position
+            distance = direction.length()
+            if distance < self.speed:
+                self.arrived = True
+            else:
+                direction = direction.normalize()
+                self.position += direction * self.speed
+                self.shape.center = (round(self.position.x), round(self.position.y))
 
     def draw(self, screen):
-        pygame.draw.rect(screen, self.color, self.shape)
+        # Dirección de movimiento
+        direction = self.target - self.position
+        if direction.length() > 0:
+            angle = -direction.angle_to(pygame.Vector2(0, -1))  # Comparado con arriba
+        else:
+            angle = 0
+
+        # Frame actual de la animación
+        self.image = self.animation[self.frame_index]
+
+        # Rotar la imagen
+        rotated_image = pygame.transform.rotate(self.image, angle)
+
+        # Obtener rect rotado con el pivote en el centro inferior
+        rotated_rect = rotated_image.get_rect(midbottom=self.shape.midbottom)
+
+        # Dibujar el sprite rotado
+        screen.blit(rotated_image, rotated_rect)
 
     
