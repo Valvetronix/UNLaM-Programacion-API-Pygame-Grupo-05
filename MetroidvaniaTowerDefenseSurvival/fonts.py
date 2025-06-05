@@ -1,1 +1,0 @@
-PATH_CAUDEX_REGULAR = "MetroidvaniaTowerDefenseSurvival\Assets\Fonts\Caudex-Regular.ttf"

@@ -133,13 +133,11 @@ class Soul:
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
         self.image = self.animation[self.frame_index]
-
         self.position = pygame.Vector2(x, y)
         self.target = pygame.Vector2(target_position)
         self.speed = speed
         self.value = value
         self.arrived = False
-
         self.shape = self.image.get_rect(midbottom=(x, y))
 
     def update(self):

@@ -6,6 +6,7 @@ import constant
 class HUD:
     def __init__(self):
         self.font_small = p.font.Font(f.PATH_CAUDEX_REGULAR, 24)
+        self.font_medium = p.font.Font(f.PATH_CAUDEX_REGULAR, 64)
         self.font_large = p.font.Font(f.PATH_CAUDEX_REGULAR, 96)
         self.alert_pos = (constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2 - constant.SCREEN_HEIGHT / 4)
         self.stats_pos = (constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 18)

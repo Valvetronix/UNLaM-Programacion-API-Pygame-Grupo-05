@@ -7,4 +7,5 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 CYAN = (0, 255, 255)
 GRAY = (69,69,69)
+HIGHLIGHT_COLOR = (100, 100, 255)
 
