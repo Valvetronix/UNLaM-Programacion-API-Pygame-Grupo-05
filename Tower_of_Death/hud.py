@@ -50,7 +50,7 @@ class HUD:
         p.draw.rect(screen, color.GRAY, self.experience_bar)
         fill_width = (self.experience / self.max_experience) * self.experience_bar.width
         self.experience_bar_fill = p.Rect(self.experience_bar.left, self.experience_bar.top, fill_width, self.experience_bar.height)
-        p.draw.rect(screen, color.GREEN, self.experience_bar_fill)
+        p.draw.rect(screen, color.EXPERIENCE_BAR_COLOR, self.experience_bar_fill)
 
         experience_text = f"{self.experience} / {self.max_experience}"
         text_surface = self.font_small.render(experience_text, True, color.WHITE)

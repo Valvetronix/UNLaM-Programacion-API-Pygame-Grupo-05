@@ -34,7 +34,7 @@ hud = HUD()
 menu = Menu(constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
 
 # Creo al personaje
-hero = Hero(400, constant.SCREEN_HEIGHT - constant.GROUND_HEIGHT, animations.ANIM_HERO_IDLE)
+hero = Hero(400, constant.GROUND_HEIGHT, animations.ANIM_HERO_IDLE)
 
 # Lista de enemigos
 enemies = []
@@ -59,7 +59,7 @@ def spawn_enemy():
         x_pos = random.randint(x_min, x_max)
 
         # Genero un enemigo con una coordenada random en el eje X
-        enemy = Skeleton(x_pos, constant.SCREEN_HEIGHT - constant.GROUND_HEIGHT, souls)
+        enemy = Skeleton(x_pos, constant.GROUND_HEIGHT, souls)
         # Lo agrego a la lista de enemigos
         enemies.append(enemy)
 
@@ -84,7 +84,7 @@ def draw_background():
 
 
 def update_and_draw():
-    # Dibujo el menuuu
+    # Dibujo el menu
     if not ingame:
         menu.draw_menu(screen)
     
@@ -147,7 +147,6 @@ while run:
     if ingame:
         spawn_enemy()
 
-    # Obtenemos los eventos UNA sola vez por frame
     events = pygame.event.get()
 
     for event in events:
@@ -156,7 +155,11 @@ while run:
 
         if ingame:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_w:
+                    hero.jump()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:
                     hero.attack()
 
             if event.type == constant.LEVEL_UP_EVENT:
@@ -165,11 +168,12 @@ while run:
             if event.type == constant.GAME_OVER_EVENT:
                 hud.game_over_alert()
 
+        # Controles del Menu
         else:
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
+                if event.key == pygame.K_LEFT or event.key == pygame.K_a:
                     menu.selected = (menu.selected - 1) % len(menu.menu_items)
-                elif event.key == pygame.K_RIGHT:
+                elif event.key == pygame.K_RIGHT or event.key == pygame.K_d:
                     menu.selected = (menu.selected + 1) % len(menu.menu_items)
                 elif event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     choice = menu.menu_items[menu.selected]

@@ -16,6 +16,12 @@ class Hero:
         self.__anim_locked = False
         self.__is_attacking = False
 
+        # SALTO
+        self.vel_y = 0
+        self.gravity = 1
+        self.jump_strength = -20
+        self.on_ground = True        
+
         # Forma del personaje
         self.shape = pygame.Rect(0, 0, constant.HERO_WIDTH, constant.HERO_HEIGHT)
         self.shape.midbottom = (x, y)
@@ -78,6 +84,16 @@ class Hero:
         # Velocidad de la animacion de ataque
         if self.__is_attacking:
             cooldown_animation = self.__attack_speed
+        
+        # Gravedad
+        self.vel_y += self.gravity
+        self.shape.y += self.vel_y
+
+        # Chequeo si toca el suelo
+        if self.shape.bottom >= constant.GROUND_HEIGHT:
+            self.shape.bottom = constant.GROUND_HEIGHT #Lo seteo en el piso por si se pasa.
+            self.vel_y = 0
+            self.on_ground = True       
 
         # Actualizacion de frames de la animacion
         self.image = self.animation[self.frame_index]
@@ -101,6 +117,9 @@ class Hero:
 
         # Update de la barra llena de experiencia:
         self.experience_bar_fill = pygame.Rect(32, 32, self.experience, 10)
+
+        # Hitbox
+        self.update_hitboxes()
             
         # Outline
         self.mask = pygame.mask.from_surface(self.image)
@@ -112,7 +131,6 @@ class Hero:
         screen.blit(flipped_image, self.shape)
 
         # Hitbox (HERO)
-        self.update_hitboxes()
         #pygame.draw.rect(screen, color.RED, self.hitbox, 1)
 
         # Hitbox (WEAPON)
@@ -132,14 +150,15 @@ class Hero:
                 self.attack_hitbox.midleft = self.hitbox.midright
 
     def move(self, axis_x, axis_y):
-        if not self.__anim_locked:            
+        if not self.__anim_locked or not self.on_ground:            
             if axis_x < 0:
                 self.__flip = True
             if axis_x > 0:
                 self.__flip = False
             self.shape.x += axis_x * self.__speed
             #self.shape.y += axis_y * self.speed (el movimiento en el eje Y no lo usamos por el momento)
-            self.animation = animations.ANIM_HERO_RUN
+            if self.on_ground:
+                self.animation = animations.ANIM_HERO_RUN
 
     def attack(self):
         if not self.__anim_locked:
@@ -166,6 +185,7 @@ class Hero:
         pygame.draw.lines(screen, color, True, adjusted_outline, 2)
         
     def jump(self):
-        #TO DO
-        pass
+        if self.on_ground and not self.__anim_locked:
+            self.vel_y = self.jump_strength
+            self.on_ground = False
 
