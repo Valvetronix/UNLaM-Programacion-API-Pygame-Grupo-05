@@ -78,7 +78,7 @@ class Hero:
         pygame.event.post(pygame.event.Event(constant.LEVEL_UP_EVENT))
 
 
-    def update(self):
+    def update(self, platforms=[]):
         # Velocidad base de las animaciones
         cooldown_animation = 150
         # Velocidad de la animacion de ataque
@@ -88,6 +88,15 @@ class Hero:
         # Gravedad
         self.vel_y += self.gravity
         self.shape.y += self.vel_y
+        self.on_ground = False
+        
+        # Chequeo colisión con plataformas
+        for platform in platforms:
+            if self.shape.colliderect(platform.rect) and self.vel_y >= 0:
+                if self.shape.bottom - self.vel_y <= platform.rect.top + 5:
+                    self.shape.bottom = platform.rect.top
+                    self.vel_y = 0
+                    self.on_ground = True        
 
         # Chequeo si toca el suelo
         if self.shape.bottom >= constant.GROUND_HEIGHT:
@@ -131,7 +140,7 @@ class Hero:
         screen.blit(flipped_image, self.shape)
 
         # Hitbox (HERO)
-        #pygame.draw.rect(screen, color.RED, self.hitbox, 1)
+        pygame.draw.rect(screen, color.RED, self.hitbox, 1)
 
         # Hitbox (WEAPON)
         #if self.attack_hitbox_active:

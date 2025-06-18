@@ -7,6 +7,7 @@ from building import Building
 import random
 from hud import HUD
 from menu import Menu
+from platforms import Platform
 
 # Inicializar Pygame
 pygame.init()
@@ -42,6 +43,16 @@ souls = []
 
 # Tower of Death
 tower = Building(constant.SCREEN_WIDTH / 2 - 64, constant.SCREEN_HEIGHT)
+
+PLATFORM_HEIGHT_CONSTANT = 128
+PLATFORM_HEIGHT_1 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT
+PLATFORM_HEIGHT_2 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT * 2
+PLATFORM_HEIGHT_3 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT * 3
+
+platforms = [
+    Platform(constant.SCREEN_WIDTH / 2, PLATFORM_HEIGHT_1, 100, 20),
+    Platform(constant.SCREEN_WIDTH / 2, PLATFORM_HEIGHT_2, 100, 20)
+]
 
 # Funcion para spawnear enemigos
 def spawn_enemy():
@@ -95,12 +106,16 @@ def update_and_draw():
         # Torre
         tower.draw(screen)
 
+        # Plataformas
+        for platform in platforms:
+            platform.draw(screen)
+
         # Tierra
         ground_image = animations.GROUND_IMAGE
         screen.blit(ground_image, (0, constant.SCREEN_HEIGHT - 96))
 
         # Heroe
-        hero.update()
+        hero.update(platforms)
         hero.draw(screen)
 
         # HUD
