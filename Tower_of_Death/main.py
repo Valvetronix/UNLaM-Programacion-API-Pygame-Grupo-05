@@ -8,6 +8,7 @@ import random
 from hud import HUD
 from menu import Menu
 from platforms import Platform
+from sound import Soundboard
 
 # Inicializar Pygame
 pygame.init()
@@ -30,6 +31,9 @@ ingame = False
 
 # HUD
 hud = HUD()
+
+#Soundboard
+soundboard = Soundboard()
 
 # Creo el menú
 menu = Menu(constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
@@ -157,6 +161,8 @@ run = True
 while run:
     clock.tick(constant.FPS)
 
+
+
     update_and_draw()
 
     if ingame:
@@ -182,6 +188,14 @@ while run:
 
             if event.type == constant.GAME_OVER_EVENT:
                 hud.game_over_alert()
+            if event.type == constant.ATTACK_EVENT:
+                soundboard.play_sound("attack")
+            if event.type == constant.JUMP_EVENT:
+                soundboard.play_sound("jump")
+            if event.type == constant.LAND_EVENT:
+                pass
+                #soundboard.play_sound("land")
+                # Corregir que suene siempre que toca el suelo
 
         # Controles del Menu
         else:

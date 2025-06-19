@@ -7,8 +7,8 @@ class Platform:
         self.image.fill((110, 110, 110))
 
         self.rect = self.image.get_rect()
-        self.rect.center = (x, y)
+        self.rect.center = (int(x), int(y))  # <- convertimos a int explícitamente
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2)
+        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2) 

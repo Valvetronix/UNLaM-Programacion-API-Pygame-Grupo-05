@@ -20,9 +20,15 @@ class Hero:
         self.vel_y = 0
         self.gravity = 1
         self.jump_strength = -20
-        self.on_ground = True        
+        self.on_ground = True
+        
+        # Cargo la animación inicial
+        self.animation = animation
+        self.frame_index = 0
+        self.update_time = pygame.time.get_ticks()
+        self.image = self.animation[self.frame_index]
 
-        # Forma del personaje
+        # Construyo el rect del héroe a partir de la imagen
         self.shape = pygame.Rect(0, 0, constant.HERO_WIDTH, constant.HERO_HEIGHT)
         self.shape.midbottom = (x, y)
 
@@ -86,24 +92,34 @@ class Hero:
             cooldown_animation = self.__attack_speed
         
         # Gravedad
-        self.vel_y += self.gravity
-        self.shape.y += self.vel_y
         self.on_ground = False
+
+        if not self.on_ground or self.vel_y < 0:
+            self.vel_y += self.gravity
+            self.shape.y += self.vel_y
+            self.update_hitboxes()
+
+         # Chequeo colision con el suelo   
+        if self.hitbox.bottom >= constant.GROUND_HEIGHT:
+            if not self.on_ground:
+                pygame.event.post(pygame.event.Event(constant.LAND_EVENT))
+            self.shape.bottom = constant.GROUND_HEIGHT
+            self.vel_y = 0
+            self.on_ground = True
+            self.update_hitboxes()
         
         # Chequeo colisión con plataformas
         for platform in platforms:
-            if self.shape.colliderect(platform.rect) and self.vel_y >= 0:
-                if self.shape.bottom - self.vel_y <= platform.rect.top + 5:
+            if self.hitbox.colliderect(platform.rect) and self.vel_y >= 0:
+                if self.hitbox.bottom - self.vel_y <= platform.rect.top + 5:
+                    if not self.on_ground:
+                        pygame.event.post(pygame.event.Event(constant.LAND_EVENT))
                     self.shape.bottom = platform.rect.top
                     self.vel_y = 0
-                    self.on_ground = True        
-
-        # Chequeo si toca el suelo
-        if self.shape.bottom >= constant.GROUND_HEIGHT:
-            self.shape.bottom = constant.GROUND_HEIGHT #Lo seteo en el piso por si se pasa.
-            self.vel_y = 0
-            self.on_ground = True       
-
+                    self.on_ground = True
+                    self.update_hitboxes()
+    
+    
         # Actualizacion de frames de la animacion
         self.image = self.animation[self.frame_index]
         if pygame.time.get_ticks() - self.update_time >= cooldown_animation:
@@ -142,13 +158,15 @@ class Hero:
         # Hitbox (HERO)
         pygame.draw.rect(screen, color.RED, self.hitbox, 1)
 
+        #pygame.draw.rect(screen, color.RED, self.shape, 1)
+
         # Hitbox (WEAPON)
         #if self.attack_hitbox_active:
         #    pygame.draw.rect(screen, color.RED, self.attack_hitbox, 2)
 
     def update_hitboxes(self):
         if self.__flip:
-            self.hitbox.x = self.shape.x + self.hitbox_offset_x - 20    # Número mágico para evitar que el hitbox quede desplazado al darse vuelta el personaje (TO DO: Encontrar una solucion y evitar el hardcodeo)
+            self.hitbox.x = self.shape.x + self.hitbox_offset_x - 20
         else:
             self.hitbox.x = self.shape.x + self.hitbox_offset_x
         self.hitbox.bottom = self.shape.bottom
@@ -175,10 +193,12 @@ class Hero:
             self.__is_attacking = True
             self.reset_frame_index()
             self.animation = animations.ANIM_HERO_ATTACK
-        
             self.attack_hitbox_active = True
             self.attack_hitbox.width = constant.HERO_ATTACK_HITBOX_WIDTH
             self.attack_hitbox.height = constant.HERO_ATTACK_HITBOX_HEIGHT
+            # EVENTO ATAQUE (para el sonido)
+            pygame.event.post(pygame.event.Event(constant.ATTACK_EVENT))
+            
     
     def idle(self):
         if self.animation != animations.ANIM_HERO_IDLE and not self.__anim_locked:
@@ -197,4 +217,6 @@ class Hero:
         if self.on_ground and not self.__anim_locked:
             self.vel_y = self.jump_strength
             self.on_ground = False
+            # EVENTO SALTO (para el sonido)
+            pygame.event.post(pygame.event.Event(constant.JUMP_EVENT))
 
