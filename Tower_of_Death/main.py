@@ -2,13 +2,14 @@ import pygame
 import animations
 import constant
 from hero import Hero
-from enemy import Skeleton
+from enemy import Skeleton, Ghost
 from building import Building
 import random
 from hud import HUD
 from menu import Menu
 from platforms import Platform
 from sound import Soundboard
+from background import Background
 
 # Inicializar Pygame
 pygame.init()
@@ -29,13 +30,16 @@ clock = pygame.time.Clock()
 # booleans
 ingame = False
 
+# Background
+background = Background()
+
 # HUD
 hud = HUD()
 
-#Soundboard
+# Consola de sonido
 soundboard = Soundboard()
 
-# Creo el menú
+# Menu
 menu = Menu(constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
 
 # Creo al personaje
@@ -43,26 +47,42 @@ hero = Hero(400, constant.GROUND_HEIGHT, animations.ANIM_HERO_IDLE)
 
 # Lista de enemigos
 enemies = []
+skeletons = []
+ghosts = []
 souls = []
+enemy_spawn_timer = 0
 
 # Tower of Death
 tower = Building(constant.SCREEN_WIDTH / 2 - 64, constant.SCREEN_HEIGHT)
 
-PLATFORM_HEIGHT_CONSTANT = 128
+PLATFORM_HEIGHT_CONSTANT = 180
 PLATFORM_HEIGHT_1 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT
 PLATFORM_HEIGHT_2 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT * 2
 PLATFORM_HEIGHT_3 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT * 3
 
+PLATFORM_WIDTH_CONSTANT = 240
+
+PLATFORM_CENTER = constant.SCREEN_WIDTH / 2
+PLATFORM_LEFT_WIDTH_1 = PLATFORM_CENTER - PLATFORM_WIDTH_CONSTANT
+PLATFORM_RIGHT_WIDTH_1 = PLATFORM_CENTER + PLATFORM_WIDTH_CONSTANT
+
 platforms = [
-    Platform(constant.SCREEN_WIDTH / 2, PLATFORM_HEIGHT_1, 100, 20),
-    Platform(constant.SCREEN_WIDTH / 2, PLATFORM_HEIGHT_2, 100, 20)
+    #Platform(PLATFORM_CENTER, PLATFORM_HEIGHT_1, 100, 20),
+    Platform(PLATFORM_CENTER, PLATFORM_HEIGHT_2, 100, 20),
+    #Platform(PLATFORM_CENTER, PLATFORM_HEIGHT_3, 100, 20),
+    Platform(PLATFORM_LEFT_WIDTH_1, PLATFORM_HEIGHT_1, 100, 20),
+    #Platform(PLATFORM_WIDTH_1, PLATFORM_HEIGHT_2, 100, 20),
+    Platform(PLATFORM_LEFT_WIDTH_1, PLATFORM_HEIGHT_3, 100, 20),
+
+    Platform(PLATFORM_RIGHT_WIDTH_1, PLATFORM_HEIGHT_1, 100, 20),
+    Platform(PLATFORM_RIGHT_WIDTH_1, PLATFORM_HEIGHT_3, 100, 20),
 ]
 
 # Funcion para spawnear enemigos
 def spawn_enemy():
-    if len(enemies) < constant.MAX_ENEMIES:
+    if len(skeletons) < constant.MAX_SKELETONS:
 
-        # Elijio entre la primer (0) o cuarta seccion (3) de la pantalla para asignar a la zona de spawn
+        # Elijo entre la primer (0) o cuarta seccion (3) de la pantalla para asignar a la zona de spawn
         spawn_zone = random.choice([0, 3])
         spawn_zone_width = constant.SCREEN_WIDTH // 4
         
@@ -77,35 +97,41 @@ def spawn_enemy():
         enemy = Skeleton(x_pos, constant.GROUND_HEIGHT, souls)
         # Lo agrego a la lista de enemigos
         enemies.append(enemy)
+    
+    if len(ghosts) < constant.MAX_GHOSTS:
+        spawn_point = random.choice([1,2,3,4,5,6])
+        if spawn_point == 1:
+            x_pos = -50
+            y_pos = constant.GHOST_SPAWN_HEIGHT_1
+        elif spawn_point == 2:
+            x_pos = -50
+            y_pos = constant.GHOST_SPAWN_HEIGHT_2
+        elif spawn_point == 3:
+            x_pos = constant.SCREEN_WIDTH + 50
+            y_pos = constant.GHOST_SPAWN_HEIGHT_1 
+        elif spawn_point == 4:
+            x_pos = -constant.SCREEN_WIDTH + 50
+            y_pos = constant.GHOST_SPAWN_HEIGHT_2
+        elif spawn_point == 5:
+            x_pos = -constant.SCREEN_WIDTH - 50
+            y_pos = constant.GHOST_SPAWN_HEIGHT_3
+        elif spawn_point == 6:
+            x_pos = -constant.SCREEN_WIDTH + 50
+            y_pos = constant.GHOST_SPAWN_HEIGHT_3
+        enemy = Ghost(x_pos, y_pos, souls, (constant.SCREEN_WIDTH/2))
+        enemies.append(enemy)
+        
 
-def draw_background():
-    background_image = animations.BACKGROUND_IMAGE
-    screen.blit(pygame.transform.scale(background_image, (constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)), (0, 0))
-
-    mountain_width = constant.SCREEN_WIDTH / 2
-    mountain_height = constant.SCREEN_HEIGHT / 2
-    mountain_image = pygame.transform.scale(animations.MOUNTAINS_IMAGE, (mountain_width, mountain_height))
-
-    for i in range(4):
-        x = i * mountain_image.get_width()
-        y = constant.SCREEN_HEIGHT - mountain_height
-        screen.blit(mountain_image, (x, y))
-
-    graveyard_width = constant.SCREEN_WIDTH
-    graveyard_height = constant.SCREEN_HEIGHT/3
-    graveyard_image = pygame.transform.scale(animations.GRAVEYARD_IMAGE, (graveyard_width, graveyard_height))
-    screen.blit(graveyard_image, (0, constant.SCREEN_HEIGHT - graveyard_height))
 
 
-
-def update_and_draw():
+def update_and_draw(delta_time):
     # Dibujo el menu
     if not ingame:
         menu.draw_menu(screen)
     
     if ingame:
         # Fondo
-        draw_background()
+        background.draw_background(screen)
 
         # Torre
         tower.draw(screen)
@@ -116,10 +142,10 @@ def update_and_draw():
 
         # Tierra
         ground_image = animations.GROUND_IMAGE
-        screen.blit(ground_image, (0, constant.SCREEN_HEIGHT - 96))
+        screen.blit(ground_image, (0, constant.SCREEN_HEIGHT - 96))     # <-------- Numerito magico
 
         # Heroe
-        hero.update(platforms)
+        hero.update(delta_time, platforms)
         hero.draw(screen)
 
         # HUD
@@ -159,14 +185,15 @@ def update_and_draw():
 # Ejecuto el juego
 run = True
 while run:
-    clock.tick(constant.FPS)
-
-
-
-    update_and_draw()
+    delta_time = clock.tick(constant.FPS) / 1000
+    
+    update_and_draw(delta_time)
 
     if ingame:
-        spawn_enemy()
+        enemy_spawn_timer += delta_time
+        if enemy_spawn_timer >= 3:
+            spawn_enemy()
+            enemy_spawn_timer = 0
 
     events = pygame.event.get()
 
@@ -192,10 +219,10 @@ while run:
                 soundboard.play_sound("attack")
             if event.type == constant.JUMP_EVENT:
                 soundboard.play_sound("jump")
-            if event.type == constant.LAND_EVENT:
-                pass
-                #soundboard.play_sound("land")
-                # Corregir que suene siempre que toca el suelo
+            if event.type == constant.SKELETON_DEATH_EVENT:
+                sound = random.choice([1,2,3,4])
+                soundboard.play_sound(f"hit_1")
+                soundboard.play_sound(f"zombie_death_{sound}")
 
         # Controles del Menu
         else:
@@ -215,12 +242,14 @@ while run:
 
     if ingame:
         keys = pygame.key.get_pressed()
+        hero.pressing_down = keys[pygame.K_s] or keys[pygame.K_DOWN]
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
             hero.move(-1, 0)
         elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             hero.move(1, 0)
         else:
-            hero.idle()
+            if hero.on_ground:
+                hero.change_animation(animations.ANIM_HERO_IDLE)
 
     pygame.display.update()
 

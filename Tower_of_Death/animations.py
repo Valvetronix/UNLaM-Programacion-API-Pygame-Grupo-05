@@ -21,7 +21,7 @@ def change_animation(character, animation):
 def load_assets():
     global ANIM_HERO_IDLE, ANIM_HERO_RUN, ANIM_HERO_ATTACK
     global ANIM_SKELETON_RISE, ANIM_SKELETON_WALK, ANIM_ENEMY_DEATH, ANIM_SOUL
-    global TOWER_IMAGE, BACKGROUND_IMAGE, MOUNTAINS_IMAGE, GRAVEYARD_IMAGE, WINDOW_ICON, GROUND_IMAGE
+    global TOWER_IMAGE, BACKGROUND_IMAGE, MOUNTAINS_IMAGE, GRAVEYARD_IMAGE, WINDOW_ICON, GROUND_IMAGE, ANIM_HERO_JUMP, ANIM_HERO_FALL, ANIM_GHOST_FLY
 
     # Icono de la ventana
     WINDOW_ICON = pygame.image.load(r"Assets\Icons\window-icon.png")
@@ -46,6 +46,12 @@ def load_assets():
     ANIM_HERO_ATTACK = []
     append_frames(r"Assets\Sprites\hero\hero-attack\hero-attack-", ANIM_HERO_ATTACK, 5)
 
+    ANIM_HERO_JUMP = []
+    append_frames(r"Assets\Sprites\hero\hero-jump\hero-jump-", ANIM_HERO_JUMP, 4)
+
+    ANIM_HERO_FALL = []
+    append_frames(r"Assets\Sprites\hero\hero-fall\hero-fall-", ANIM_HERO_FALL, 2)
+
     # Animaciones del Esqueleto
 
     ANIM_SKELETON_RISE = []
@@ -53,6 +59,11 @@ def load_assets():
 
     ANIM_SKELETON_WALK = []
     append_frames(r"Assets\Sprites\skeleton\skeleton-", ANIM_SKELETON_WALK, 8)
+
+    # Animaciones del fantasma
+
+    ANIM_GHOST_FLY = []
+    append_frames(r"Assets\Sprites\ghost/ghost-", ANIM_GHOST_FLY, 4)
 
     # Animacion general de muerte enemigo
 

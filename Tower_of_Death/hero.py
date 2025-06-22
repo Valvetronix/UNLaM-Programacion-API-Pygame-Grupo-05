@@ -15,6 +15,11 @@ class Hero:
         self.__flip = False
         self.__anim_locked = False
         self.__is_attacking = False
+        self.__pressing_down = False
+        self.jumped = False
+        self.coyote_counter = 0
+        self.coyote_timer = 0.1 # Segundos
+        self.air_attack_hold = False
 
         # SALTO
         self.vel_y = 0
@@ -75,6 +80,14 @@ class Hero:
     @property
     def level(self):
         return self.__level
+    
+    @property
+    def pressing_down(self):
+        return self.__pressing_down
+    
+    @pressing_down.setter
+    def pressing_down(self, value):
+        self.__pressing_down = value
 
     def level_up(self):
         self.__level += 1
@@ -83,8 +96,7 @@ class Hero:
         # EVENTO LEVEL UP
         pygame.event.post(pygame.event.Event(constant.LEVEL_UP_EVENT))
 
-
-    def update(self, platforms=[]):
+    def update(self, delta_time, platforms=[]):
         # Velocidad base de las animaciones
         cooldown_animation = 150
         # Velocidad de la animacion de ataque
@@ -93,7 +105,7 @@ class Hero:
         
         # Gravedad
         self.on_ground = False
-
+            
         if not self.on_ground or self.vel_y < 0:
             self.vel_y += self.gravity
             self.shape.y += self.vel_y
@@ -101,8 +113,6 @@ class Hero:
 
          # Chequeo colision con el suelo   
         if self.hitbox.bottom >= constant.GROUND_HEIGHT:
-            if not self.on_ground:
-                pygame.event.post(pygame.event.Event(constant.LAND_EVENT))
             self.shape.bottom = constant.GROUND_HEIGHT
             self.vel_y = 0
             self.on_ground = True
@@ -110,18 +120,22 @@ class Hero:
         
         # Chequeo colisión con plataformas
         for platform in platforms:
-            if self.hitbox.colliderect(platform.rect) and self.vel_y >= 0:
-                if self.hitbox.bottom - self.vel_y <= platform.rect.top + 5:
-                    if not self.on_ground:
-                        pygame.event.post(pygame.event.Event(constant.LAND_EVENT))
+            if self.hitbox.colliderect(platform.rect) and self.vel_y >= 0 and not self.pressing_down:
+                if self.hitbox.bottom - self.vel_y <= platform.rect.top + 5: #coyote running
                     self.shape.bottom = platform.rect.top
                     self.vel_y = 0
                     self.on_ground = True
                     self.update_hitboxes()
+
+        # Coyote Time
+        if self.on_ground:
+            self.coyote_counter = self.coyote_timer
+        else:
+            self.coyote_counter -= delta_time
     
-    
+        # Animación 
+
         # Actualizacion de frames de la animacion
-        self.image = self.animation[self.frame_index]
         if pygame.time.get_ticks() - self.update_time >= cooldown_animation:
             self.frame_index += 1
             self.update_time = pygame.time.get_ticks()
@@ -129,16 +143,30 @@ class Hero:
         # Cuando finaliza la animación
         if self.frame_index >= len(self.animation):
             self.reset_frame_index()
-            # Deja de estar anim_locked
-            if self.__anim_locked:
-                self.__anim_locked = False
-            # Remuevo hitbox de ataque
-            if self.attack_hitbox_active:
-                self.attack_hitbox_active = False
-                # Con esto elimino el hitbox, de otra forma seguiría estando en el ultimo lugar donde ataco
-                self.attack_hitbox.width = 0
-                self.attack_hitbox.height = 0
-                self.__is_attacking = False
+            if self.__is_attacking and not self.on_ground:
+                self.frame_index = len(self.animation) - 1
+                self.air_attack_hold = True  # <- activo congelamiento en el ultimo frame de la animacion de ataque en el aire hasta que toque el suelo.
+            else:
+                self.reset_frame_index()
+                if self.__anim_locked:
+                    self.__anim_locked = False
+                if self.attack_hitbox_active:
+                    self.attack_hitbox_active = False
+                    self.attack_hitbox.width = 0    # <- aca elimino el hitbox del ataque, si no seguiría en el ultimo lugar.
+                    self.attack_hitbox.height = 0
+                    self.__is_attacking = False
+
+        self.image = self.animation[self.frame_index]
+        
+        if not self.__is_attacking:
+            if not self.on_ground:
+                if self.vel_y < 0 and self.jumped:
+                    self.change_animation(animations.ANIM_HERO_JUMP)
+                elif self.vel_y >= 0:
+                    self.change_animation(animations.ANIM_HERO_FALL)
+            else:
+                if self.animation != animations.ANIM_HERO_RUN and self.animation != animations.ANIM_HERO_IDLE:
+                    self.change_animation(animations.ANIM_HERO_IDLE)
 
         # Update de la barra llena de experiencia:
         self.experience_bar_fill = pygame.Rect(32, 32, self.experience, 10)
@@ -156,7 +184,7 @@ class Hero:
         screen.blit(flipped_image, self.shape)
 
         # Hitbox (HERO)
-        pygame.draw.rect(screen, color.RED, self.hitbox, 1)
+        #pygame.draw.rect(screen, color.RED, self.hitbox, 1)
 
         #pygame.draw.rect(screen, color.RED, self.shape, 1)
 
@@ -177,7 +205,7 @@ class Hero:
                 self.attack_hitbox.midleft = self.hitbox.midright
 
     def move(self, axis_x, axis_y):
-        if not self.__anim_locked or not self.on_ground:            
+        if axis_x !=  0 and not self.__anim_locked or not self.on_ground:            
             if axis_x < 0:
                 self.__flip = True
             if axis_x > 0:
@@ -198,12 +226,11 @@ class Hero:
             self.attack_hitbox.height = constant.HERO_ATTACK_HITBOX_HEIGHT
             # EVENTO ATAQUE (para el sonido)
             pygame.event.post(pygame.event.Event(constant.ATTACK_EVENT))
-            
-    
-    def idle(self):
-        if self.animation != animations.ANIM_HERO_IDLE and not self.__anim_locked:
+             
+    def change_animation(self, animation):
+        if self.animation != animation and not self.__anim_locked:
             self.reset_frame_index()
-            self.animation = animations.ANIM_HERO_IDLE
+            self.animation = animation
 
     def draw_outline(self, screen, color):
         outline = self.outline
@@ -214,9 +241,11 @@ class Hero:
         pygame.draw.lines(screen, color, True, adjusted_outline, 2)
         
     def jump(self):
-        if self.on_ground and not self.__anim_locked:
+        if (self.on_ground or self.coyote_counter > 0) and not self.__anim_locked:
             self.vel_y = self.jump_strength
             self.on_ground = False
+            self.jumped = True
+            self.animation = animations.ANIM_HERO_JUMP
             # EVENTO SALTO (para el sonido)
             pygame.event.post(pygame.event.Event(constant.JUMP_EVENT))
 

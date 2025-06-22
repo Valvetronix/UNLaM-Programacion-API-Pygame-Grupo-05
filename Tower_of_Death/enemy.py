@@ -10,7 +10,7 @@ import animations
 import random
 
 class Enemy:
-    def __init__(self, x, y, width, height, hitbox_width, hitbox_height, base_color, souls):
+    def __init__(self, x, y, width, height, hitbox_width, hitbox_height, souls):
         # Atributos:
         self.alive = True
         self.dying = False
@@ -21,7 +21,6 @@ class Enemy:
         # Forma
         self.shape = pygame.Rect(0, 0, width, height)
         self.shape.midbottom = (x, y)
-        self.color = base_color
 
         # Hitbox
         self.hitbox = pygame.Rect(0, 0, hitbox_width, hitbox_height)
@@ -81,6 +80,7 @@ class Enemy:
         # Elimino hitbox para evitar colisiones
         self.hitbox.width = 0
         self.hitbox.height = 0
+        pygame.event.post(pygame.event.Event(constant.SKELETON_DEATH_EVENT))
 
         # Inicia la animación de muerte
         if not self.dying:
@@ -103,8 +103,7 @@ class Skeleton(Enemy):
         super().__init__(
             x, y,
             constant.SKELETON_WIDTH, constant.SKELETON_HEIGHT,
-            constant.SKELETON_HITBOX_WIDTH, constant.SKELETON_HITBOX_HEIGHT,
-            color.GREEN, souls
+            constant.SKELETON_HITBOX_WIDTH, constant.SKELETON_HITBOX_HEIGHT, souls
         )
 
         # Animación de aparición desde el suelo
@@ -127,8 +126,32 @@ class Skeleton(Enemy):
         self.animation = animations.ANIM_SKELETON_WALK
         super().move()
 
+class Ghost(Enemy):
+    #def __init__(self, x, y, width, height, hitbox_width, hitbox_height, base_color, souls):
+    def __init__(self, x, y, souls, target_position):
+        super().__init__(
+            x, y,
+            constant.GHOST_WIDTH, constant.GHOST_HEIGHT,
+            constant.GHOST_HITBOX_WIDTH, constant.GHOST_HITBOX_HEIGHT, souls
+        )
+        self.animation = animations.ANIM_GHOST_FLY
+        self.image = self.animation[self.frame_index]
+        self.target_position = target_position
+        self.speed = 3
+    
+    def move(self):
+        # Calculo la dirección hacia el objetivo
+        if self.target_position > self.shape.centerx:
+            self.direction = 1
+        elif self.target_position < self.shape.centerx:
+            self.direction = -1
+
+        self.shape.x += self.direction * self.speed
+        self.flip = self.direction < 0
+        self.update_hitboxes()
+
 class Soul:
-    def __init__(self, x, y, target_position, speed=3, value=10):
+    def __init__(self, x, y, target_position, speed=4, value=10):
         self.animation = animations.ANIM_SOUL
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()

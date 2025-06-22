@@ -8,6 +8,7 @@ class HUD:
         self.font_small = p.font.Font(f.PATH_CAUDEX_REGULAR, 24)
         self.font_medium = p.font.Font(f.PATH_CAUDEX_REGULAR, 64)
         self.font_large = p.font.Font(f.PATH_CAUDEX_REGULAR, 96)
+        self.font_large_bold = p.font.Font(f.PATH_CAUDEX_BOLD, 96)
         self.alert_pos = (constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2 - constant.SCREEN_HEIGHT / 4)
         self.stats_pos = (constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 18)
         self.alert_timer = 0
@@ -20,7 +21,7 @@ class HUD:
 
 
     def level_alert(self, level):
-        self.alert_text = f"Level {level}"
+        self.alert_text = f"{level}"
         self.alert_timer = 120
         self.color = color.WHITE
         
@@ -41,7 +42,9 @@ class HUD:
         # Alertas (LEVEL UP / GAME OVER)
         if self.alert_timer > 0:
             alert = self.font_large.render(self.alert_text, True, self.color)
+            shadow = self.font_large_bold.render(self.alert_text, True, color.BLACK)
             rect = alert.get_rect(center=(self.alert_pos))
+            screen.blit(shadow, rect)
             screen.blit(alert, rect)
 
         # Stats

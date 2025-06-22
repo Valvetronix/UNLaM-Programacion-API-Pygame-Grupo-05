@@ -11,4 +11,4 @@ class Platform:
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 0, 0), self.rect, 2) 
+        #pygame.draw.rect(screen, (255, 0, 0), self.rect, 2) 

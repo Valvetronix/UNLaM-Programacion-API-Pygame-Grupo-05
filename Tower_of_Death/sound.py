@@ -7,7 +7,14 @@ class Soundboard:
         # Diccionario de sonidos
         self.sounds = {
             "attack": pygame.mixer.Sound("Assets/Sounds/melee_attack_1.wav"),
-            "zombie_death": pygame.mixer.Sound("Assets/Sounds/zombieDeath1.wav"),
+            "zombie_death_1": pygame.mixer.Sound("Assets/Sounds/zombieDeath1.wav"),
+            "zombie_death_2": pygame.mixer.Sound("Assets/Sounds/zombieDeath2.wav"),
+            "zombie_death_3": pygame.mixer.Sound("Assets/Sounds/zombieDeath3.wav"),
+            "zombie_death_4": pygame.mixer.Sound("Assets/Sounds/zombieDeath4.wav"),
+            "hit_1": pygame.mixer.Sound("Assets/Sounds/hit1.wav"),
+            "hit_2": pygame.mixer.Sound("Assets/Sounds/hit2.wav"),
+            "hit_3 ": pygame.mixer.Sound("Assets/Sounds/hit3.wav"),
+            "hit_4 ": pygame.mixer.Sound("Assets/Sounds/hit4.wav"),
             "jump": pygame.mixer.Sound("Assets/Sounds/jump.wav"),
             "land": pygame.mixer.Sound("Assets/Sounds/land.wav")
         }
