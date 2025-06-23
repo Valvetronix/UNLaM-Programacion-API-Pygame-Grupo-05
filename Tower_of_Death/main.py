@@ -10,6 +10,7 @@ from menu import Menu
 from platforms import Platform
 from sound import Soundboard
 from background import Background
+import fonts
 
 # Inicializar Pygame
 pygame.init()
@@ -28,7 +29,9 @@ pygame.display.set_icon(animations.WINDOW_ICON)
 clock = pygame.time.Clock()
 
 # booleans
-ingame = False
+game_started = False
+menu_active = True
+game_over = False
 
 # Background
 background = Background()
@@ -38,19 +41,10 @@ hud = HUD()
 
 # Consola de sonido
 soundboard = Soundboard()
+soundboard.play_next_track()
 
 # Menu
 menu = Menu(constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
-
-# Creo al personaje
-hero = Hero(400, constant.GROUND_HEIGHT, animations.ANIM_HERO_IDLE)
-
-# Lista de enemigos
-enemies = []
-skeletons = []
-ghosts = []
-souls = []
-enemy_spawn_timer = 0
 
 # Tower of Death
 tower = Building(constant.SCREEN_WIDTH / 2 - 64, constant.SCREEN_HEIGHT)
@@ -78,9 +72,24 @@ platforms = [
     Platform(PLATFORM_RIGHT_WIDTH_1, PLATFORM_HEIGHT_3, 100, 20),
 ]
 
+# Creo al personaje
+hero = Hero(constant.HERO_SPAWN_X, constant.HERO_SPAWN_Y, animations.ANIM_HERO_IDLE)
+
+# Lista de enemigos
+enemies = []
+skeletons = []
+ghosts = []
+souls = []
+enemy_spawn_timer = 0
+
+# Contadores de Score
+ghosts_killed = 0
+skeletons_killed = 0
+
 # Funcion para spawnear enemigos
-def spawn_enemy():
-    if len(skeletons) < constant.MAX_SKELETONS:
+def spawn_enemy(level = 1):
+    level = level
+    if len(skeletons) < level * 2:
 
         # Elijo entre la primer (0) o cuarta seccion (3) de la pantalla para asignar a la zona de spawn
         spawn_zone = random.choice([0, 3])
@@ -98,7 +107,7 @@ def spawn_enemy():
         # Lo agrego a la lista de enemigos
         enemies.append(enemy)
     
-    if len(ghosts) < constant.MAX_GHOSTS:
+    if level == 1 and len(ghosts) < constant.MAX_GHOSTS:
         spawn_point = random.choice([1,2,3,4,5,6])
         if spawn_point == 1:
             x_pos = -50
@@ -121,19 +130,86 @@ def spawn_enemy():
         enemy = Ghost(x_pos, y_pos, souls, (constant.SCREEN_WIDTH/2))
         enemies.append(enemy)
         
+def fade_in(screen, speed=2):
+    fade_surface = pygame.Surface((constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT))
+    fade_surface.fill((0, 0, 0))
+    for alpha in range(255, -1, -speed):
+        fade_surface.set_alpha(alpha)
+        update_and_draw(delta_time)  # Dibuja la escena actual
+        screen.blit(fade_surface, (0, 0))
+        pygame.display.update()
+        pygame.time.delay(10)
 
+def fade_out(screen, speed=1):
+    fade_surface = pygame.Surface((constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT))
+    fade_surface.fill((0, 0, 0))
+    for alpha in range(0, 256, speed):
+        fade_surface.set_alpha(alpha)
+        update_and_draw(delta_time)  # Dibuja la escena actual
+        screen.blit(fade_surface, (0, 0))
+        pygame.display.update()
+        pygame.time.delay(10)
+
+def show_game_over_screen(screen, score):
+    font_big = pygame.font.SysFont(fonts.PATH_CAUDEX_BOLD, 64)
+    font_small = pygame.font.SysFont(fonts.PATH_CAUDEX_REGULAR, 32)
+
+    game_over_text = font_big.render("Game Over", True, (255, 255, 255))
+    skeletons_killed_text = font_small.render(f"Esqueletos destruidos: {skeletons_killed}", True, (255, 255, 255))
+    ghosts_killed_text = font_small.render(f"Fantasmas destruidos: {ghosts_killed}", True, (255, 255, 255))
+    level_achieved_text = font_small.render(f"Nivel alcanzado: {hero.level}", True, (255, 255, 255))
+    score_text = font_big.render(f"Tu puntaje: {score}", True, (255, 255, 255))
+    press_key_text = font_small.render("Presioná la tecla espacio para continuar...", True, (200, 200, 200))
+
+    fade_surface = pygame.Surface((constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT))
+    fade_surface.fill((0, 0, 0))
+
+    alpha = 0
+    while alpha < 255:
+        fade_surface.set_alpha(alpha)
+        screen.blit(fade_surface, (0, 0))
+        screen.blit(game_over_text, game_over_text.get_rect(center=(constant.SCREEN_WIDTH//2, 200)))
+        screen.blit(skeletons_killed_text, skeletons_killed_text.get_rect(center=(constant.SCREEN_WIDTH//2, 400)))
+        screen.blit(ghosts_killed_text, ghosts_killed_text.get_rect(center=(constant.SCREEN_WIDTH//2, 500)))
+        screen.blit(level_achieved_text, level_achieved_text.get_rect(center=(constant.SCREEN_WIDTH//2, 600)))
+        screen.blit(score_text, score_text.get_rect(center=(constant.SCREEN_WIDTH//2, 800)))
+        pygame.display.update()
+        alpha += 5
+        pygame.time.delay(100)
+
+    # Esperar cualquier tecla
+    waiting = True
+    while waiting:
+        screen.fill((0, 0, 0))
+        screen.blit(game_over_text, game_over_text.get_rect(center=(constant.SCREEN_WIDTH//2, 200)))
+        screen.blit(skeletons_killed_text, skeletons_killed_text.get_rect(center=(constant.SCREEN_WIDTH//2, 400)))
+        screen.blit(ghosts_killed_text, ghosts_killed_text.get_rect(center=(constant.SCREEN_WIDTH//2, 500)))
+        screen.blit(level_achieved_text, level_achieved_text.get_rect(center=(constant.SCREEN_WIDTH//2, 600)))
+        screen.blit(score_text, score_text.get_rect(center=(constant.SCREEN_WIDTH//2, 800)))
+        screen.blit(press_key_text, press_key_text.get_rect(center=(constant.SCREEN_WIDTH//2, 1000)))
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    waiting = False
 
 
 def update_and_draw(delta_time):
+    global skeletons_killed, ghosts_killed
     # Dibujo el menu
-    if not ingame:
+    if menu_active:
         menu.draw_menu(screen)
-    
-    if ingame:
+
+    if game_started:
         # Fondo
         background.draw_background(screen)
 
         # Torre
+        tower.update()
         tower.draw(screen)
 
         # Plataformas
@@ -142,11 +218,12 @@ def update_and_draw(delta_time):
 
         # Tierra
         ground_image = animations.GROUND_IMAGE
-        screen.blit(ground_image, (0, constant.SCREEN_HEIGHT - 96))     # <-------- Numerito magico
+        screen.blit(ground_image, (0, constant.GROUND_TILE_HEIGHT))
 
         # Heroe
-        hero.update(delta_time, platforms)
-        hero.draw(screen)
+        if not game_over:
+            hero.update(delta_time, platforms)
+            hero.draw(screen)
 
         # HUD
         hud.update()
@@ -157,12 +234,22 @@ def update_and_draw(delta_time):
         for enemy in enemies:
             # Detecto la colision del ataque del Heroe con el Enemigo
             if hero.attack_hitbox.colliderect(enemy.hitbox):
+                if isinstance(enemy, Skeleton):
+                    skeletons_killed += 1
+                    print("Esqueleto")
+                elif isinstance(enemy, Ghost):
+                    ghosts_killed += 1
+                    print("Fantasma")
+                
                 enemy.destroy()
+
 
             # Detecto si impacta la torre
             if tower.hitbox.colliderect(enemy.hitbox):
-                tower.trigger_outline()
+                tower.trigger_overlay()
+                enemy.collisioned = True
                 enemy.destroy()
+                tower.receive_damage()
 
             # Una vez muerto lo remuevo de la lista de enemigos
             if not enemy.alive:
@@ -175,12 +262,14 @@ def update_and_draw(delta_time):
 
         # Recorro la lista de Almas
         for soul in souls[:]:
-            soul.update()
-            soul.draw(screen)
-            if soul.arrived:
-                hero.experience += soul.value
+            if soul.alive:
+                soul.update()
+                soul.draw(screen)
+                if soul.arrived:
+                    hero.experience += soul.value
+                    souls.remove(soul)
+            else:
                 souls.remove(soul)
-
 
 # Ejecuto el juego
 run = True
@@ -189,19 +278,28 @@ while run:
     
     update_and_draw(delta_time)
 
-    if ingame:
+    if game_started and not game_over:
         enemy_spawn_timer += delta_time
         if enemy_spawn_timer >= 3:
             spawn_enemy()
             enemy_spawn_timer = 0
+
+    if game_over:
+        for enemy in enemies:
+            enemy.destroy()
+        for soul in souls:
+            soul.destroy()
 
     events = pygame.event.get()
 
     for event in events:
         if event.type == pygame.QUIT:
             run = False
+        
+        if event.type == constant.MUSIC_END_EVENT:
+            soundboard.play_next_track()
 
-        if ingame:
+        if game_started and not game_over:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
                     hero.jump()
@@ -215,14 +313,36 @@ while run:
 
             if event.type == constant.GAME_OVER_EVENT:
                 hud.game_over_alert()
+                fade_out(screen)
+                score = hero.experience  # Revisar puntaje
+                show_game_over_screen(screen, score)
+
+                # Volver al menú
+                soundboard.update_music_queue(soundboard.music_menu_queue)
+                soundboard.play_next_track()
+                game_started = False
+                menu_active = True
+                enemies.clear()
+                skeletons.clear()
+                ghosts.clear()
+                souls.clear()
+                hero.reset()  # Esto requiere que tengas un método para reiniciar al héroe
+                tower = Building(constant.SCREEN_WIDTH / 2 - 64, constant.SCREEN_HEIGHT)
+                skeletons_killed = 0
+                ghosts_killed = 0
+
             if event.type == constant.ATTACK_EVENT:
                 soundboard.play_sound("attack")
+
             if event.type == constant.JUMP_EVENT:
                 soundboard.play_sound("jump")
+
             if event.type == constant.SKELETON_DEATH_EVENT:
                 sound = random.choice([1,2,3,4])
                 soundboard.play_sound(f"hit_1")
                 soundboard.play_sound(f"zombie_death_{sound}")
+            
+
 
         # Controles del Menu
         else:
@@ -234,19 +354,26 @@ while run:
                 elif event.key == pygame.K_SPACE or event.key == pygame.K_RETURN:
                     choice = menu.menu_items[menu.selected]
                     if choice == "Start":
-                        ingame = True
+                        game_over = False
+                        game_started = True
+                        menu_active = False
+                        soundboard.update_music_queue(soundboard.music_game_queue)
+                        soundboard.play_next_track()
+                        fade_in(screen)
                     elif choice == "Credits":
                         print("Mostrar créditos...")
                     elif choice == "Quit":
                         run = False
 
-    if ingame:
+    if game_started and not game_over:
         keys = pygame.key.get_pressed()
         hero.pressing_down = keys[pygame.K_s] or keys[pygame.K_DOWN]
         if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-            hero.move(-1, 0)
+            if hero.hitbox.x >= 0: # Limite
+                hero.move(-1, 0)
         elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-            hero.move(1, 0)
+            if hero.hitbox.x <= constant.SCREEN_WIDTH: # Limite
+                hero.move(1, 0)
         else:
             if hero.on_ground:
                 hero.change_animation(animations.ANIM_HERO_IDLE)
@@ -255,3 +382,4 @@ while run:
 
 pygame.quit()
 print("Fin!")
+

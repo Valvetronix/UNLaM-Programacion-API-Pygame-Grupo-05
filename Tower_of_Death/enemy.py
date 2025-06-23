@@ -17,6 +17,7 @@ class Enemy:
         self.flip = False
         self.direction = random.choice([-1, 1])  # Con esto randomizo la dirección inicial del enemigo, idealmente después esto dependerá de dónde esté el objetivo.
         self.souls = souls
+        self.collisioned = False # Si choco contra la torre
 
         # Forma
         self.shape = pygame.Rect(0, 0, width, height)
@@ -91,12 +92,28 @@ class Enemy:
             self.anim_locked = True  # Bloqueo hasta que termine la animación de muerte
 
     def on_animation_unlock(self):
-        # Este método se llama automáticamente cuando finaliza una animación bloqueada
-        if self.dying:
+        # Este método se llama automáticamente cuando finaliza una animación
+        if self.dying and not self.collisioned:
             soul = Soul(self.shape.centerx, self.shape.centery, [constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2])
             self.souls.append(soul)
-            self.alive = False  # Me aseguro que termine la animación de muerte
+            self.alive = False
+        # Me aseguro que termine la animación de muerte
+        elif self.dying:
+            self.alive = False
+    
+    def draw_overlay(self, screen):
+        # Clonamos la imagen original con formato alpha
+        overlay_image = self.scaled_image.copy()
 
+        # Creamos una superficie roja con alfa y la mezclamos con la imagen
+        red_tint = pygame.Surface(overlay_image.get_size(), pygame.SRCALPHA)
+        red_tint.fill((255, 0, 0, 100))  # Rojo semitransparente
+
+        # Usamos BLEND_RGBA_MULT para aplicar el tinte solo donde hay pixeles visibles
+        overlay_image.blit(red_tint, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+
+        # Dibujamos la imagen final con tinte sobre la pantalla
+        screen.blit(overlay_image, self.shape.topleft)  
 
 class Skeleton(Enemy):
     def __init__(self, x, y, souls):
@@ -113,10 +130,12 @@ class Skeleton(Enemy):
         self.souls = souls
 
     def on_animation_unlock(self):
-        if self.dying:
+        if self.dying and not self.collisioned:
             soul = Soul(self.shape.centerx, self.shape.centery, [constant.SCREEN_WIDTH / 2, constant.SCREEN_HEIGHT / 2])
             self.souls.append(soul)
             self.alive = False
+        elif self.dying:
+            self.alive = False 
         else:
             self.animation = animations.ANIM_SKELETON_WALK
             self.reset_frame_index()
@@ -162,6 +181,7 @@ class Soul:
         self.value = value
         self.arrived = False
         self.shape = self.image.get_rect(midbottom=(x, y))
+        self.alive = True
 
     def update(self):
         # Animación
@@ -201,5 +221,8 @@ class Soul:
 
         # Dibujar el sprite rotado
         screen.blit(rotated_image, rotated_rect)
+
+    def destroy(self):
+        self.alive = False
 
     

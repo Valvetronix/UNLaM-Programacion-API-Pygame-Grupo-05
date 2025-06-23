@@ -28,7 +28,7 @@ class HUD:
     def game_over_alert(self):
         self.alert_text = "Game Over"
         self.alert_timer = 120
-        self.color = color.RED
+        self.color = color.WHITE
 
     def update_stats(self, experience, max_experience):
         self.experience = experience
@@ -59,3 +59,4 @@ class HUD:
         text_surface = self.font_small.render(experience_text, True, color.WHITE)
         text_rect = text_surface.get_rect(center=self.experience_bar.center)
         screen.blit(text_surface, text_rect)
+

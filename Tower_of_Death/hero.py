@@ -249,3 +249,6 @@ class Hero:
             # EVENTO SALTO (para el sonido)
             pygame.event.post(pygame.event.Event(constant.JUMP_EVENT))
 
+    def reset(self):
+        self.__init__(constant.HERO_SPAWN_X, constant.HERO_SPAWN_Y, animations.ANIM_HERO_IDLE)
+
