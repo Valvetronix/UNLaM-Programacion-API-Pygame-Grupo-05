@@ -3,14 +3,15 @@
 ### Primer Cuatrimestre de la Tenicatura en Desarrollo de Videojuegos (UNLaM) (2025)
 
 ## ¿De qué se trata?
-Tower of Death es un Survival Defender Arena donde el objetivo es defender una estructura de oleadas de enemigos laterales.
+### Tower of Death es un **Survival Defender Arena** donde el objetivo es defender una estructura de oleadas de enemigos laterales.
 
 ## Assets que usé
-Música del Menú: Propia
-Música de Combate: [Purgatory Extreme Metal Music Pack](https://davidkbd.itch.io/purgatory-extreme-metal-music-pack) (gratis!)
-Sprites: [Gothicvania Cemetery Pack](https://opengameart.org/content/gothicvania-cemetery-pack) (gratis!)
+### Música del Menú: Propia
+### Música de Combate: [Purgatory Extreme Metal Music Pack](https://davidkbd.itch.io/purgatory-extreme-metal-music-pack) (gratis!)
+### Sprites: [Gothicvania Cemetery Pack](https://opengameart.org/content/gothicvania-cemetery-pack) (gratis!)
 
 # Progreso
+### Pequeño lapso de tiempo los primeros días del proeycto donde documente en GIFs mis avances.
 ## Día 1
 ### Movimiento
 ![Movimiento](Documentacion/GIFs/1-movimiento.gif)
