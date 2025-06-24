@@ -41,7 +41,7 @@ class Soundboard:
         # Queue procedural de tracks
         self.music_queue = ["menu_track_3"]
         self.music_menu_queue = ["menu_track_3"]
-        self.music_game_queue = ["game_track_3", "game_track_3", "game_track_8", "game_track_3", "game_track_3", "game_track_7"]
+        self.music_game_queue = ["game_track_5", "game_track_5", "game_track_8", "game_track_3", "game_track_3", "game_track_7"]
         self.current_track_index = 0
 
         # Configuraciones de volumen
