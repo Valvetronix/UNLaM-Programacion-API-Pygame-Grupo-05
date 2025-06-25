@@ -36,7 +36,7 @@ class Explosion:
 
 class Building:
     def __init__(self, x, y):
-        self.hp = 0
+        self.hp = 10
         self.shape = pygame.Rect(0, 0, constant.TOWER_WIDTH, constant.TOWER_HEIGHT)
         self.shape.midbottom = (x, y)
         self.image = animations.TOWER_IMAGE

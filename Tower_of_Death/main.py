@@ -55,7 +55,6 @@ PLATFORM_HEIGHT_2 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT * 2
 PLATFORM_HEIGHT_3 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT * 3
 
 PLATFORM_WIDTH_CONSTANT = 240
-
 PLATFORM_CENTER = constant.SCREEN_WIDTH / 2
 PLATFORM_LEFT_WIDTH_1 = PLATFORM_CENTER - PLATFORM_WIDTH_CONSTANT
 PLATFORM_RIGHT_WIDTH_1 = PLATFORM_CENTER + PLATFORM_WIDTH_CONSTANT
@@ -314,7 +313,7 @@ while run:
             if event.type == constant.GAME_OVER_EVENT:
                 hud.game_over_alert()
                 fade_out(screen)
-                score = hero.experience  # Revisar puntaje
+                score = hero.level * (ghosts_killed + skeletons_killed) +  hero.experience
                 show_game_over_screen(screen, score)
 
                 # Volver al menú
