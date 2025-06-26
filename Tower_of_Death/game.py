@@ -7,7 +7,7 @@ from building import Building
 import random
 from hud import HUD
 from menu import Menu
-from platforms import Platform
+import platforms as p
 from sound import Soundboard
 from background import Background
 from transitions import fade_transition, show_game_over_screen
@@ -39,23 +39,7 @@ class Game:
         self.tower = Building(constant.SCREEN_WIDTH / 2 - 64, constant.SCREEN_HEIGHT)
 
         # Plataformas
-        PLATFORM_HEIGHT_CONSTANT = 180
-        PLATFORM_HEIGHT_1 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT
-        PLATFORM_HEIGHT_2 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT * 2
-        PLATFORM_HEIGHT_3 = constant.SCREEN_HEIGHT - PLATFORM_HEIGHT_CONSTANT * 3
-
-        PLATFORM_WIDTH_CONSTANT = 240
-        PLATFORM_CENTER = constant.SCREEN_WIDTH / 2
-        PLATFORM_LEFT_WIDTH_1 = PLATFORM_CENTER - PLATFORM_WIDTH_CONSTANT
-        PLATFORM_RIGHT_WIDTH_1 = PLATFORM_CENTER + PLATFORM_WIDTH_CONSTANT
-
-        self.platforms = [
-            Platform(PLATFORM_CENTER, PLATFORM_HEIGHT_2, 100, 20),
-            Platform(PLATFORM_LEFT_WIDTH_1, PLATFORM_HEIGHT_1, 100, 20),
-            Platform(PLATFORM_LEFT_WIDTH_1, PLATFORM_HEIGHT_3, 100, 20),
-            Platform(PLATFORM_RIGHT_WIDTH_1, PLATFORM_HEIGHT_1, 100, 20),
-            Platform(PLATFORM_RIGHT_WIDTH_1, PLATFORM_HEIGHT_3, 100, 20),
-        ]
+        self.platforms = p.platforms_1
 
         # Creo al personaje
         self.hero = Hero(constant.HERO_SPAWN_X, constant.HERO_SPAWN_Y, animations.ANIM_HERO_IDLE)

@@ -9,7 +9,7 @@ screen = pygame.display.set_mode((constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
 pygame.display.set_caption("Tower of Death")
 
 # Cargar assets
-tile_set = animations.load_assets()
+animations.load_assets()
 pygame.display.set_icon(animations.WINDOW_ICON)
 
 # Ejecutar el juego

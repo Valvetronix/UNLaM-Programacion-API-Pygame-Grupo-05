@@ -23,7 +23,6 @@ def fade_transition(screen, draw_callback, fade_in=True, speed=2):
 def show_game_over_screen(screen, score, skeletons_killed, ghosts_killed, level):
     font_big = pygame.font.SysFont(fonts.PATH_CAUDEX_BOLD, 64)
     font_small = pygame.font.SysFont(fonts.PATH_CAUDEX_REGULAR, 32)
-
     game_over_text = font_big.render("Game Over", True, (255, 255, 255))
     skeletons_text = font_small.render(f"Esqueletos destruidos: {skeletons_killed}", True, (255, 255, 255))
     ghosts_text = font_small.render(f"Fantasmas destruidos: {ghosts_killed}", True, (255, 255, 255))
