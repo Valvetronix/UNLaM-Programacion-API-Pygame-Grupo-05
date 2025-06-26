@@ -185,10 +185,13 @@ class Game:
                         self.soundboard.update_music_queue(self.soundboard.music_menu_queue)
                         self.soundboard.play_next_track()
                         self.reset_game()
+
                     if event.type == constant.ATTACK_EVENT:
                         self.soundboard.play_sound("attack")
+
                     if event.type == constant.JUMP_EVENT:
                         self.soundboard.play_sound("jump")
+                        
                     if event.type == constant.SKELETON_DEATH_EVENT:
                         sound = random.choice([1,2,3,4])
                         self.soundboard.play_sound("hit_1")

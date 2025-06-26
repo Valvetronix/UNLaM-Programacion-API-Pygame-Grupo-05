@@ -13,7 +13,7 @@ class Enemy:
     def __init__(self, x, y, width, height, hitbox_width, hitbox_height, souls):
         # Atributos:
         self.alive = True
-        self.dying = False
+        self.dying = False # sirve para las animaciones
         self.flip = False
         self.direction = random.choice([-1, 1])  # Con esto randomizo la dirección inicial del enemigo, idealmente después esto dependerá de dónde esté el objetivo.
         self.souls = souls

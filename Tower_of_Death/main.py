@@ -14,4 +14,4 @@ pygame.display.set_icon(animations.WINDOW_ICON)
 
 # Ejecutar el juego
 game = Game(screen)
-game.start()
+game.start() 
