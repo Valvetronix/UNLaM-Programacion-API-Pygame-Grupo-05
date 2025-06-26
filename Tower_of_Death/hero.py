@@ -53,6 +53,7 @@ class Hero:
         # Animacion
         self.animation = animation
         self.frame_index = 0
+
         # Lambda para resetear el frame_index a 0 luego de finalizar una animación
         self.reset_frame_index = lambda: setattr(self, 'frame_index', 0)
         self.update_time = pygame.time.get_ticks()

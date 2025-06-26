@@ -29,9 +29,9 @@ class Soundboard:
             "game_track_1": "Assets/Music/game-track-1.ogg",
             "game_track_2": "Assets/Music/game-track-2.ogg",
             "game_track_3": "Assets/Music/game-track-3.ogg",
-            "game_track_4": "Assets/Music/game-track-4.ogg",
+            #"game_track_4": "Assets/Music/game-track-4.ogg", # No anda
             "game_track_5": "Assets/Music/game-track-5.ogg",
-            "game_track_6": "Assets/Music/game-track-6.ogg",
+            #"game_track_6": "Assets/Music/game-track-6.ogg", # No anda
             "game_track_7": "Assets/Music/game-track-7.ogg",
             "game_track_8": "Assets/Music/game-track-8.ogg",
             "game_track_9": "Assets/Music/game-track-9.ogg",
@@ -48,7 +48,7 @@ class Soundboard:
         for sound in self.sounds.values():
             sound.set_volume(0.4)
 
-        self.music_volume = 0.3
+        self.music_volume = 0.05
         pygame.mixer.music.set_volume(self.music_volume)
 
         # Evento al finalizar una pista

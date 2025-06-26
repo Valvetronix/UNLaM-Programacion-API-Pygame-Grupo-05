@@ -17,7 +17,7 @@ class Game:
         self.screen = screen
         self.clock = pygame.time.Clock()
 
-        # booleans
+        # Booleans
         self.game_started = False
         self.menu_active = True
         self.game_over = False
@@ -180,7 +180,7 @@ class Game:
                     if event.type == constant.GAME_OVER_EVENT:
                         self.hud.game_over_alert()
                         fade_transition(self.screen, lambda: self.update_and_draw(delta_time), fade_in=False)
-                        score = self.hero.experience
+                        score = (self.ghosts_killed + self.skeletons_killed) * self.hero.level
                         show_game_over_screen(self.screen, score, self.skeletons_killed, self.ghosts_killed, self.hero.level)
                         self.soundboard.update_music_queue(self.soundboard.music_menu_queue)
                         self.soundboard.play_next_track()

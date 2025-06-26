@@ -33,3 +33,5 @@ platforms_1 = [
     Platform(PLATFORM_RIGHT_WIDTH_1, PLATFORM_HEIGHT_1, 100, 20),
     Platform(PLATFORM_RIGHT_WIDTH_1, PLATFORM_HEIGHT_3, 100, 20),
 ]
+
+platforms_2 = []
