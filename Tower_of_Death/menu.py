@@ -7,10 +7,11 @@ from color import WHITE, GRAY, BLACK
 # title_image = pygame.transform.scale(title_image, (ancho_deseado, alto_deseado))
 
 class Menu():
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height, background):
         # Opciones del menú
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.background = background
 
         self.regular_font = pygame.font.Font(PATH_CAUDEX_REGULAR, 24)
         self.bold_font = pygame.font.Font(PATH_CAUDEX_BOLD, 24)
@@ -21,14 +22,14 @@ class Menu():
 
     def draw_menu(self, screen):
         # en las siguientes 2 lineas de codigo se quitaria el asterisco una vz tengamos la foto deel titulo del juego y se modificaria eso
-        # img_x = SCREEN_WIDTH // 2 - title_image.get_width() // 2
-        # screen.blit(title_image, (img_x, 50))
+        # img_x = SCREEN_WIDTH
+        screen.blit(self.background, (0, 0))
 
         # nos da la seleccion de las 3 opciones que esten en el centro de la pantalla
         total_width = 0
         texts = []
 
-        screen.fill(BLACK)
+        #screen.fill(BLACK)
 
         for item in self.menu_items:
             text = self.regular_font.render(item, True, GRAY)

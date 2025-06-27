@@ -33,7 +33,7 @@ class Game:
         self.soundboard.play_next_track()
 
         # Menu
-        self.menu = Menu(constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT)
+        self.menu = Menu(constant.SCREEN_WIDTH, constant.SCREEN_HEIGHT, animations.CONTROLS_BACKGROUND)
 
         # Torre
         self.tower = Building(constant.SCREEN_WIDTH / 2 - 64, constant.SCREEN_HEIGHT)
